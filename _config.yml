@@ -72,3 +72,5 @@ deploy:
   type: git
   repo: https://github.com/Sevody/sevody.github.io.git
   branch: master
+  name: sevody
+  email: sevody@gmail.com
