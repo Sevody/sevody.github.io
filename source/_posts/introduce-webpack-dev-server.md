@@ -12,6 +12,8 @@ tags: webpack
 
 webpack-dev-server 是一个小型的 **Node.js Express** 服务器，它使用 **webpack-dev-middleware** 来服务于 webpack 。当 webpack 编译后，它会把编译状态信息发送给浏览器页面，并执行内嵌的刷新脚本。
 
+<!--more-->
+
 ## 安装
 
 在命令行运行下面的命令：
