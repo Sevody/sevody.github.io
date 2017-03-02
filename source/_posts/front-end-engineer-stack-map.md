@@ -1,0 +1,259 @@
+---
+title: Front-end Engineer Stack
+date: 2017-01-19 21:41:18
+tags: feeling
+---
+
+之前在知乎上看到一幅前端工程师需要掌握的技能的思维导图，不明觉厉。
+
+于是我也试着按照自己的理解，做了一幅，让自己对前端开发有个全局的认识。
+
+我想，随着今后前端的发展和对前端认识的深入，这幅思维导图也会不断的更新吧。
+
+<!--more-->
+
+![-w2969](http://oj8psq2wh.bkt.clouddn.com/14835170486432.jpg)
+
+- 核心基础
+     - HTML / HTML5
+     - Javacript / ES6
+     - CSS / CSS3
+     - 中间语言
+       - LESS/Sass
+       - TypeScript
+
+- Runtime
+     - 浏览器
+       - IE6/7/8/9/10/11
+       - Firefox
+       - Chrome
+       - Safari
+       - Opera
+       - Edge
+     - DOM API
+       - window
+       - Cookie
+       - Local Cache
+       - LocalStorage
+       - Session Storage
+     - 渲染引擎
+       - Trident(IE)
+       - Blink/ prev.Webkit(Chrome)
+       - Gecko(Firefox)
+       - Webkit(Safari)
+       - Blink / prev.Presto(Opera)
+       - EdgeHTML(Edge)
+     - 渲染引擎
+       - JScript(IE8- / ASP)
+       - Chakra(IE9+ / Edge)
+       - V8(Chrome / Opera / Nodejs / MongoDB)
+       - SpiderMonkey(Firefox)
+       - JavaScriptCore(Safari)
+     - 移动端
+       - 响应式网页设计
+     - 兼容性
+- 工具
+     - 编辑器
+       - Sublime Text
+       - Vim
+       - Atom
+       - Cloud9
+       - WebStorm
+       - Visual Studio
+       - Eclipse
+       - Typora
+       - 微信开发者工具
+       - Xcode
+     - 开发调试
+       - Chrome Dev Tool
+       - Markman
+       - Postman
+       - Charles
+       - Fiddler
+       - CodePen
+     - 管理工具
+       - git
+       - svn
+       - docker
+     - 知识管理
+       - Pocket
+       - OneNote
+       - Evernote
+       - XMind
+       - Trello
+     - 效率
+       - iTem / oh-my-zsh
+       - Alfred
+       - Dash
+       - Moom
+       - Lantern
+     - 操作系统
+       - Linux
+       - Mac
+       - Windows
+
+- 编程实现与架构设计
+     - 编程范型
+          - 指令式编程
+          - 面向对象编程
+          - 函数式编程
+     -  数据结构与算法
+     -  设计模式
+- 性能与可维护性
+- 工程化
+     - 代码质量
+       - 代码风格
+         - JSLint / ESLint
+         - CSSLint
+         - HTML Validators
+     - 模块化
+       - RequireJS
+       - CommonJs
+       - Webpack
+       - Browserify
+     - 转换优化
+       - Bable
+     - 压缩合并
+       - Google Clousure Complier
+       - UglifyJS
+     - 项目构建
+       - npm / yarn
+       - Grunt
+       - Gulp
+       - Yeoman
+       - bower
+     - 持续集成
+       - 单元测试
+         - Mocha
+         - Chai
+         - Selenium
+         - Jasmine
+       - 自动化测试
+         - WebDriver
+         - Karma
+         - phantomjs
+       - CI 工具
+         - GitLab
+         - yaml
+     - 数据分析与监控
+- 最佳实践
+     - 服务端渲染
+     - SEO
+     - CDN
+     - 安全
+       - CSRF
+       - XSS
+       - CORS
+     - 统一化
+       - Normalize
+       - Reset
+- 库与框架
+     - MVC
+          - React
+          - AugulaJs
+          - vue.js
+          - Backbone
+          - Knockout
+          - Ember
+          - ploymer
+     - UI
+          - Bootstrap
+          - Semantic UI
+     - 组件类
+          - swiper
+          - slick
+     - 工具类
+          - jQuery
+          - Underscore
+          - Lodash
+     - 模板引擎
+          - Handlebars
+          - Jade
+          - Ejs
+     - 可视化
+          - D3
+          - Echars
+          - HighCharts
+          - Three.JS
+     - 移动端
+          - React Native
+          - ZeptoJS / JQuery Mobil
+          - iScroll
+          - PhoneGap / Cordova / Ionic
+     - 桌面端
+          - Electron
+          - NW.js
+     - 其它
+          - Socket.io
+          - RxJS
+- 社区与标准
+     - 标准/规范
+       - HTTP/1.1: RFCs 7230-7235
+       - [HTTP/2](https://http2.github.io/)
+       - [ECMAScript3/5](http://www.ecma-international.org/publications/standards/Ecma-262.htm)
+       - [ECMAScript6](http://www.ecma-international.org/ecma-262/6.0/index.html)
+       - [W3C: DOM/BOM/XHTML/XML/JSON/JSONP/...](http://www.w3.org/TR/)
+       - [CommonJS Modules](http://wiki.commonjs.org/wiki/Modules/1.0)/[AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)
+       - [HTML5](http://www.w3.org/html/wg/drafts/html/master/)/[CSS3](http://www.w3.org/Style/CSS/specs.en.html)
+       - [Semantic Web](http://semanticweb.org/)
+         - [MicroData](http://schema.org)
+         - [RDFa](http://www.w3.org/TR/rdfa-core/)
+       - [Web Accessibility](http://www.w3.org/WAI/)
+         - [WCAG](http://www.w3.org/TR/WAI-WEBCONTENT/)
+         - [Role Attribute](http://www.w3.org/TR/role-attribute/)
+         - [WAI-ARIA](http://www.w3.org/TR/wai-aria/)
+     - 技术会议
+       - [D2](http://d2forum.org)
+       - [JSConf](http://jsconf.com/)
+       - [CSSConf](http://cssconf.com/)
+       - Segmentfault Conf
+     - 社区/博客
+       - MDN
+       - WHATWG
+       - codepen
+       - Medium
+       - w3cplus
+       - div.io
+       - Taobao FED
+       - alloyteam
+       - cnode
+       - 稀土掘金
+       - 阮一峰博客
+- 计算机知识储备
+     - 编译原理
+     - 计算机网络
+     - 操作系统
+     - 数据结构
+     - 算法原理
+     - 软件工程
+- 软技能
+     - 交互设计
+     - 知识管理
+       - 博客
+     - 团队协作
+     - 工作面试
+
+
+- 后端开发
+     - 编程语言
+          - Node
+          - Ruby
+          - Python
+          - Java
+     - web 服务器
+          - Nginx
+          - Apache
+          - Lighttpd
+     - 数据库
+          - MySQL
+          - PostgreSQL
+          - Oracle
+          - MongoDB
+     - 数据缓存
+          - Redis
+          - Memcached
+     - 文件缓存/代理
+          - Varnish
+          - Squid
+
+

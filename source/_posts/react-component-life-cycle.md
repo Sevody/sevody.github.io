@@ -7,6 +7,8 @@ tags: react
 在编写 react 组件时，根据需要会在组件生命周期的不同阶段实现不同的逻辑。
 下面总结了在每个生命周期的基本用法。
 
+<!--more-->
+
 ### getDefaultProps
 
 初始化 props
@@ -14,8 +16,6 @@ tags: react
 ### getInitailState
 
 初始化 state
-
-<!--more-->
 
 ### componentWillMount
 
