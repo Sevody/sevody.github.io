@@ -1,0 +1,640 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="最近几年，前端的工具层出不穷，grunt、gulp、browserify、webpack、autoprefix…前端er们为了偷懒前端工程化也是拼了（&amp;gt; _ &amp;lt;） 我在编写和维护 react 模块的时候，也尝试过不少优化工作流的工具和配置。于是把比较基础的通用配置给总结下，方便在新的项目参考使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react 模块仓库基础设施">
+<meta property="og:url" content="https://sevody.github.io/2017/02/28/base-module-repo-config/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="最近几年，前端的工具层出不穷，grunt、gulp、browserify、webpack、autoprefix…前端er们为了偷懒前端工程化也是拼了（&amp;gt; _ &amp;lt;） 我在编写和维护 react 模块的时候，也尝试过不少优化工作流的工具和配置。于是把比较基础的通用配置给总结下，方便在新的项目参考使用。">
+<meta property="og:updated_time" content="2017-06-24T03:20:41.837Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react 模块仓库基础设施">
+<meta name="twitter:description" content="最近几年，前端的工具层出不穷，grunt、gulp、browserify、webpack、autoprefix…前端er们为了偷懒前端工程化也是拼了（&amp;gt; _ &amp;lt;） 我在编写和维护 react 模块的时候，也尝试过不少优化工作流的工具和配置。于是把比较基础的通用配置给总结下，方便在新的项目参考使用。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2017/02/28/base-module-repo-config/"/>
+
+  <title> react 模块仓库基础设施 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                react 模块仓库基础设施
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-02-28T20:21:57+08:00" content="2017-02-28">
+              2017-02-28
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近几年，前端的工具层出不穷，<strong>grunt</strong>、<strong>gulp</strong>、<strong>browserify</strong>、<strong>webpack</strong>、<strong>autoprefix</strong>…<br>前端er们为了<del>偷懒</del>前端工程化也是拼了（&gt; _ &lt;）</p>
+<p>我在编写和维护 react 模块的时候，也尝试过不少优化工作流的工具和配置。于是把比较基础的通用配置给总结下，方便在新的项目参考使用。</p>
+<a id="more"></a>
+<h2 id="使用-webpack-自动打包"><a href="#使用-webpack-自动打包" class="headerlink" title="使用 webpack 自动打包"></a>使用 webpack 自动打包</h2><h3 id="基本配置"><a href="#基本配置" class="headerlink" title="基本配置"></a>基本配置</h3><p>下面是使用 webpack 打包的基本配置</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.babel.js</span></div><div class="line"><span class="keyword">import</span> webpack <span class="keyword">from</span> <span class="string">'webpack'</span></div><div class="line"><span class="keyword">import</span> path <span class="keyword">from</span> <span class="string">'path'</span></div><div class="line"><span class="keyword">const</span> commonsPlugin = webpack.optimize,CommonsChunkPlugin(&#123;<span class="attr">name</span>: <span class="string">'common'</span>, <span class="attr">minChunks</span>: <span class="number">2</span>&#125;)</div><div class="line"></div><div class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</div><div class="line">    <span class="attr">entry</span>: <span class="string">'./app.js'</span>,</div><div class="line">    <span class="attr">output</span>: &#123;</div><div class="line">        <span class="attr">path</span>: path.resolve(__dirname, <span class="string">'dist'</span>),</div><div class="line">        <span class="attr">filename</span>: <span class="string">'bundle.js'</span>,</div><div class="line">        <span class="attr">publicPath</span>: <span class="string">'assets'</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">module</span>: &#123;</div><div class="line">        <span class="attr">loader</span>: [</div><div class="line">            &#123;<span class="attr">test</span>: <span class="regexp">/\.jsx?$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_module/</span>, <span class="attr">loader</span>: <span class="string">'babel-loader'</span>&#125;,</div><div class="line">            &#123;<span class="attr">test</span>: <span class="regexp">/\.less$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_module/</span>, <span class="attr">loader</span>: <span class="string">'style!css!less'</span>&#125;,</div><div class="line">            &#123;<span class="attr">test</span>: <span class="regexp">/\.(png|jpg|svg)$/</span>, <span class="attr">exclude</span>: <span class="regexp">/node_module/</span>, <span class="attr">loader</span>: <span class="string">'url-loader'</span>&#125;</div><div class="line">        ]</div><div class="line">    &#125;,</div><div class="line">    <span class="attr">plugins</span>: [commonsPlugin]</div><div class="line">    resolve: &#123;</div><div class="line">        <span class="attr">extensions</span>: [<span class="string">'js'</span>, <span class="string">'jsx'</span>, <span class="string">'less'</span>]</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意，这里 webpack 配置的文件名多加了个 babel 后缀，是因为 webpack 会根据 webpack.config[.loader].js 的命令规则，会先使用文件名声明的 loader 来处理配置文件。那样，config 文件就可以使用 es6 语法了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// .babelrc</span></div><div class="line">&#123;</div><div class="line">  <span class="string">"presets"</span>: [ <span class="string">"es2015"</span>, <span class="string">"stage-0"</span>, <span class="string">"react"</span>]</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的 babel 配置可以让我们的项目使用 es6 和 jsx 语法。</p>
+<h3 id="热更新-amp-自动刷新"><a href="#热更新-amp-自动刷新" class="headerlink" title="热更新 &amp; 自动刷新"></a>热更新 &amp; 自动刷新</h3><p>为了<del>节省换键盘的钱</del>少按 F5 / Command + r , 我们最好配置代码的热更新和浏览器自动刷新。这样，当我们改完一行代码并保存后，就能马上在浏览器上看到结果。</p>
+<p>全局安装 <code>webpack-dev-server</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line"></div><div class="line">...</div><div class="line">output: &#123;</div><div class="line">        <span class="attr">path</span>: path.resolve(__dirname, <span class="string">'dist'</span>),</div><div class="line">        <span class="attr">filename</span>: <span class="string">'bundle.js'</span>,</div><div class="line">        <span class="attr">publicPath</span>: <span class="string">'http://localhost:8080/'</span></div><div class="line">    &#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<p>命令行运行： <code>webpack-dev-server --hot --inline</code></p>
+<p>之后，打开 <code>http://localhost:8080</code> 就能看到我们的页面啦o(￣▽￣)””</p>
+<h3 id="sourceMap"><a href="#sourceMap" class="headerlink" title="sourceMap"></a>sourceMap</h3><p>sourceMap 能让我们调试的时候能直接通过源代码调试</p>
+<ul>
+<li>less sourceMap:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line">...</div><div class="line">&#123; <span class="attr">test</span>: <span class="regexp">/\.less$/</span>, <span class="attr">loader</span>: <span class="string">'style!css?sourceMap!less-loader?sourceMap=true'</span> &#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<ul>
+<li><p>jsx sourceMap:</p>
+<ul>
+<li><p><code>webpack-dev-server</code> 加上 <code>-d</code> 参数</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webpack-dev-server --hot --inline -d</div></pre></td></tr></table></figure>
+</li>
+<li><p>或者修改 <code>webpack.config.js</code></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line">...</div><div class="line">devtool: <span class="string">"inline-source-map"</span>,</div><div class="line">...</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="autoprefix"><a href="#autoprefix" class="headerlink" title="autoprefix"></a>autoprefix</h3><p>配置了 autoprefix，再也不用手动敲 <code>-webkit-</code> 啦</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line">...</div><div class="line">import autoprefixer <span class="keyword">from</span> <span class="string">'autoprefixer'</span>;</div><div class="line">...</div><div class="line"></div><div class="line">...</div><div class="line">&#123;<span class="attr">test</span>: <span class="regexp">/\.less$/</span>, <span class="attr">loader</span>: <span class="string">"style!css?sourceMap!postcss!less?sourceMap=true"</span>&#125;</div><div class="line">...</div><div class="line"></div><div class="line">...</div><div class="line">postcss: [</div><div class="line">    autoprefixer(&#123;</div><div class="line">        <span class="attr">browsers</span>: [<span class="string">'last 5 versions'</span>, <span class="string">'&gt; 1%'</span>]</div><div class="line">    &#125;)</div><div class="line">],</div><div class="line">...</div></pre></td></tr></table></figure>
+<h3 id="分离开发环境和生产环境"><a href="#分离开发环境和生产环境" class="headerlink" title="分离开发环境和生产环境"></a>分离开发环境和生产环境</h3><p>*nix:</p>
+<p><code>export NODE_ENV=prod &amp;&amp; npm run webpack</code></p>
+<p>windows:</p>
+<p><code>set NODE_ENV=prod &amp;&amp; npm run webpack</code></p>
+<p>之后在 <code>webpack.config.js</code> 中，通过 <code>process.env.NODE_ENV</code> 来读取环境变量</p>
+<p>为了不用手动处理平台的区别，更简单的方式是使用 <a href="https://www.npmjs.com/package/better-npm-run" target="_blank" rel="external">better-npm-run</a> 来设置 NODE_ENV</p>
+<h3 id="webpack-性能优化"><a href="#webpack-性能优化" class="headerlink" title="webpack 性能优化"></a>webpack 性能优化</h3><ul>
+<li>配置 alias</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// webpack.config.js</span></div><div class="line">...</div><div class="line">resolve: &#123;</div><div class="line">    <span class="attr">extensions</span>: [<span class="string">''</span>, <span class="string">'.js'</span>, <span class="string">'.jsx'</span>, <span class="string">'.less'</span>, <span class="string">'.css'</span>],</div><div class="line">    <span class="attr">alias</span>: &#123;</div><div class="line">        <span class="string">'react'</span>: path.join(nodeModulesPath, <span class="string">'react/react.js'</span>),</div><div class="line">        <span class="string">'react-dom'</span>: path.join(nodeModulesPath, <span class="string">'react-dom/dist/react-dom.js'</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">...</div></pre></td></tr></table></figure>
+<ul>
+<li><p>happypack</p>
+<blockquote>
+<p><a href="https://segmentfault.com/a/1190000007891318#articleHeader6" target="_blank" rel="external">https://segmentfault.com/a/1190000007891318#articleHeader6</a></p>
+</blockquote>
+</li>
+<li><p>配置 externals</p>
+<blockquote>
+<p><a href="https://segmentfault.com/a/1190000007891318#articleHeader4" target="_blank" rel="external">https://segmentfault.com/a/1190000007891318#articleHeader4</a></p>
+</blockquote>
+</li>
+<li><p>dllPlugin</p>
+<blockquote>
+<p><a href="https://segmentfault.com/a/1190000007891318#articleHeader5" target="_blank" rel="external">https://segmentfault.com/a/1190000007891318#articleHeader5</a></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Eslint"><a href="#Eslint" class="headerlink" title="Eslint"></a>Eslint</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><blockquote>
+<p><a href="https://www.npmjs.com/package/eslint-config-airbnb" target="_blank" rel="external">https://www.npmjs.com/package/eslint-config-airbnb</a></p>
+</blockquote>
+<h3 id="命令行执行-lint"><a href="#命令行执行-lint" class="headerlink" title="命令行执行 lint"></a>命令行执行 lint</h3><p><code>node node_modules/eslint/bin/eslint.js src; exit 0</code></p>
+<blockquote>
+<p>exit 0 是为了不让 npm 输入 exit 1 的错误<br><a href="https://github.com/eslint/eslint/issues/2409" target="_blank" rel="external">https://github.com/eslint/eslint/issues/2409</a></p>
+</blockquote>
+<h3 id="配置-Sublime-自动校验"><a href="#配置-Sublime-自动校验" class="headerlink" title="配置 Sublime 自动校验"></a>配置 Sublime 自动校验</h3><blockquote>
+<p><a href="https://segmentfault.com/a/1190000008068415" target="_blank" rel="external">https://segmentfault.com/a/1190000008068415</a></p>
+</blockquote>
+<h3 id="Style-Guide"><a href="#Style-Guide" class="headerlink" title="Style Guide"></a>Style Guide</h3><ul>
+<li><p><a href="https://github.com/airbnb/javascript" target="_blank" rel="external">airbnb style</a></p>
+</li>
+<li><p><a href="http://eslint.org/docs/rules" target="_blank" rel="external">eslint rule details</a></p>
+</li>
+</ul>
+<h2 id="制作-library"><a href="#制作-library" class="headerlink" title="制作 library"></a>制作 library</h2><h3 id="webpack-配置"><a href="#webpack-配置" class="headerlink" title="webpack 配置"></a>webpack 配置</h3><blockquote>
+<p><a href="https://webpack.js.org/guides/author-libraries" target="_blank" rel="external">https://webpack.js.org/guides/author-libraries</a><br>需要注意的是不能使用 CommonsPlugin</p>
+</blockquote>
+<h3 id="批量-export-组件"><a href="#批量-export-组件" class="headerlink" title="批量 export 组件"></a>批量 export 组件</h3><p>利用 require.context 读取组件目录下的所有文件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> req = <span class="built_in">require</span>.context(<span class="string">'.'</span>, <span class="literal">true</span>, /.*\.js/);</div><div class="line"></div><div class="line">req.keys().forEach(<span class="function">(<span class="params">mod</span>) =&gt;</span> &#123;</div><div class="line">  <span class="keyword">const</span> v = req(mod);</div><div class="line">  <span class="keyword">const</span> match = mod.match(<span class="regexp">/\.\/([\w]+)\//</span>);</div><div class="line">  <span class="keyword">if</span> (match &amp;&amp; match[<span class="number">1</span>] &amp;&amp; match[<span class="number">1</span>]) &#123;</div><div class="line">      exports[match[<span class="number">1</span>]] = v.default;</div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<blockquote>
+<p><a href="https://webpack.js.org/guides/dependency-management/#require-context" target="_blank" rel="external">https://webpack.js.org/guides/dependency-management/#require-context</a></p>
+</blockquote>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>TODO</p>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><ul>
+<li><a href="https://github.com/Sevody/re-tabs" target="_blank" rel="external">https://github.com/Sevody/re-tabs</a></li>
+<li><a href="https://github.com/Sevody/re-feedback" target="_blank" rel="external">https://github.com/Sevody/re-feedback</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/21/my-tool-kit/" rel="next" title="My Tool Kit">
+                <i class="fa fa-chevron-left"></i> My Tool Kit
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/02/implicit-conversion-in-js/" rel="prev" title="js 中的隐式类型转换">
+                js 中的隐式类型转换 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-webpack-自动打包"><span class="nav-number">1.</span> <span class="nav-text">使用 webpack 自动打包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本配置"><span class="nav-number">1.1.</span> <span class="nav-text">基本配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热更新-amp-自动刷新"><span class="nav-number">1.2.</span> <span class="nav-text">热更新 & 自动刷新</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sourceMap"><span class="nav-number">1.3.</span> <span class="nav-text">sourceMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#autoprefix"><span class="nav-number">1.4.</span> <span class="nav-text">autoprefix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分离开发环境和生产环境"><span class="nav-number">1.5.</span> <span class="nav-text">分离开发环境和生产环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack-性能优化"><span class="nav-number">1.6.</span> <span class="nav-text">webpack 性能优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eslint"><span class="nav-number">2.</span> <span class="nav-text">Eslint</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行执行-lint"><span class="nav-number">2.2.</span> <span class="nav-text">命令行执行 lint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-Sublime-自动校验"><span class="nav-number">2.3.</span> <span class="nav-text">配置 Sublime 自动校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Style-Guide"><span class="nav-number">2.4.</span> <span class="nav-text">Style Guide</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#制作-library"><span class="nav-number">3.</span> <span class="nav-text">制作 library</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#webpack-配置"><span class="nav-number">3.1.</span> <span class="nav-text">webpack 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量-export-组件"><span class="nav-number">3.2.</span> <span class="nav-text">批量 export 组件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单元测试"><span class="nav-number">4.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Example"><span class="nav-number">5.</span> <span class="nav-text">Example</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

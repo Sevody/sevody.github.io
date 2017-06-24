@@ -1,0 +1,643 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="js," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="起由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解函数对象">
+<meta property="og:url" content="https://sevody.github.io/2017/06/25/function-object/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="起由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。">
+<meta property="og:updated_time" content="2017-06-24T12:13:18.907Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解函数对象">
+<meta name="twitter:description" content="起由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2017/06/25/function-object/"/>
+
+  <title> 深入理解函数对象 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深入理解函数对象
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-06-25T21:43:13+08:00" content="2017-06-25">
+              2017-06-25
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="起"><a href="#起" class="headerlink" title="起"></a>起</h2><p>由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。</p>
+<a id="more"></a>
+<p>在 go 里，对象封装是通过 struct 实现的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Idol <span class="keyword">struct</span> &#123;</div><div class="line">  Name <span class="keyword">string</span></div><div class="line">  Age <span class="keyword">int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(idol *Idol)</span> <span class="title">sayHello</span><span class="params">()</span></span> &#123;</div><div class="line">  fmt.Printf(<span class="string">"私は%s, %d歳です。"</span>, idol.Name, idol.Age)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">  kotori := &amp;Idol&#123;Name:<span class="string">"南小鳥"</span>, Age: <span class="number">17</span>&#125;</div><div class="line">	kotori.sayHello()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>嗯，这很好理解，把 struct 想象成 Object 就是了。</p>
+<p>然后回到 js :<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Vue.config.devtools = <span class="literal">true</span></div><div class="line"></div><div class="line">Vue.component(<span class="string">'my-component'</span>, &#123;</div><div class="line">  <span class="comment">// 选项</span></div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">el</span>: <span class="string">'#some-element'</span>,</div><div class="line">  <span class="comment">// 选项</span></div><div class="line">&#125;)</div><div class="line"></div><div class="line">vm.$watch(</div><div class="line">  <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// do something</span></div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
+<p>什么鬼？Vue 是函数吧？为什么函数里还能设置属性，为什么函数还能调用方法？</p>
+<p>……………..过了大概 17 秒</p>
+<p>哦，赶紧从 go 的世界里回来，这是 js 呢。函数是一种特殊的对象，当然有属性，想必有方法。再仔细看看，config 是静态属性，component 会是静态方法，new 一个函数就是新建一个对象并调用这个构造函数并返回对象，$watch 是在 Vue.prototype 里定义的实例方法。嗯，没毛病。</p>
+<p>……………..过了大概 17 秒</p>
+<p>不行，还是好奇怪，在函数里用点操作符什么的，おかしい。在 js 的函数是对象，那函数体最后是怎么执行？</p>
+<p>私、気になる（千反田Geass）</p>
+<h2 id="承"><a href="#承" class="headerlink" title="承"></a>承</h2><p>我们先来看看 <a href="http://www.ecma-international.org/ecma-262/6.0" target="_blank" rel="external">spec</a> 关于函数对象的定义：</p>
+<blockquote>
+<p>ECMAScript function objects encapsulate parameterized ECMAScript code closed over a lexical environment and support the dynamic evaluation of that code. <strong>An ECMAScript function object is an ordinary object and has the same internal slots and the same internal methods as other ordinary objects.</strong> The code of an ECMAScript function object may be either strict mode code (10.2.1) or non-strict mode code. An ECMAScript function object whose code is strict mode code is called a strict function. One whose code is not strict mode code is called a non-strict function.</p>
+</blockquote>
+<p>函数对象是与普通对象有着相同 internal slot 和 internal method 的对象。那么 internal slot 和 internal method 是什么呢？</p>
+<p>再来找找<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-object-type" target="_blank" rel="external">普通对象</a>的定义：</p>
+<blockquote>
+<p>An Object is logically a collection of properties. Each property is either a data property, or an accessor property:</p>
+<ul>
+<li>A data property associates a key value with an ECMAScript language value and a set of Boolean attributes.</li>
+<li>An accessor property associates a key value with one or two accessor functions, and a set of Boolean attributes. The accessor functions are used to store or retrieve an ECMAScript language value that is associated with the property.</li>
+</ul>
+<p>…</p>
+<p>The actual semantics of objects, in ECMAScript, are specified via algorithms called internal methods. <strong>Each object in an ECMAScript engine is associated with a set of internal methods that defines its runtime behaviour.</strong> These internal methods are not part of the ECMAScript language. They are defined by this specification purely for expository purposes. However, each object within an implementation of ECMAScript must behave as specified by the internal methods associated with it. The exact manner in which this is accomplished is determined by the implementation.</p>
+<p>…</p>
+<p><strong>Internal slots correspond to internal state that is associated with objects and used by various ECMAScript specification algorithms.</strong> Internal slots are not object properties and they are not inherited. Depending upon the specific internal slot specification, such state may consist of values of any ECMAScript language type or of specific ECMAScript specification type values. Unless explicitly specified otherwise, internal slots are allocated as part of the process of creating an object and may not be dynamically added to an object. Unless specified otherwise, the initial value of an internal slot is the value undefined. Various algorithms within this specification create objects that have internal slots. However, the ECMAScript language provides no direct way to associate internal slots with an object.</p>
+</blockquote>
+<p>Object 是一个属性的集合。每个属性既可以是一个命名数据属性，也可以是一个命名访问器属性。命名访问器属性也就是具有 <strong>[[Get]]</strong> 和 <strong>[[Set]]</strong> 特性的属性（vue 的响应式变量就是通过它们来实现的）。</p>
+<p>而 JS 引擎通过 internal method 来定义对象运行时的行为，通过 internal slot 来获取对象运行时的内部状态。对于 internal method 和 internal slot，用户不能直接访问它们，只能通过 JS 引擎提供的 API 访问。</p>
+<p>对象基本的 internal method 有：<code>[[GetPrototypeOf]]</code>、<code>[[SetPrototypeOf]]</code>、<code>[[GetOwnProperty]]</code>、<code>[[GET]]</code>、<code>[[SET]]</code>、<code>[[Delete]]</code> 等等。</p>
+<p>对象基本的 internal slot 有：<code>[[Prototype]]</code>、<code>[[Extensible]]</code>。</p>
+<p>而对于函数对象：</p>
+<blockquote>
+<p>A function object is an object that supports the [[Call]] internal methods. A constructor (also referred to as a constructor function) is a function object that supports the [[Construct]] internal method.</p>
+</blockquote>
+<p>也就是除了对象基本的 internal method 外，函数对象还拥有 <code>[[Call]]</code> 和 <code>[[Construct]]</code>。</p>
+<p>另外，除了对象基本的 internal slot，函数对象还有 <code>[[Environment]]</code>、<code>[[FormalParameters]]</code>、<code>[[ECMAScriptCode]]</code>、<code>[[Realm]]</code>、<code>[[ThisMode]]</code>、<code>[[Strict]]</code> 等 internal slot。</p>
+<h2 id="转"><a href="#转" class="headerlink" title="转"></a>转</h2><p>清楚了函数对象在引擎内部的数据结构，接下来我们就可以看看声明一个函数时，实际上做了什么：</p>
+<blockquote>
+<p>When the Function function is called with some arguments p1, p2, … , pn, body (where n might be 0, that is, there are no “p” arguments, and where body might also not be provided), the following steps are taken:</p>
+<ol>
+<li>Let C be the active function object.</li>
+<li>Let args be the argumentsList that was passed to this function by [[Call]] or [[Construct]].</li>
+<li>Return CreateDynamicFunction(C, NewTarget, “normal”, args).</li>
+</ol>
+</blockquote>
+<p>就结果而言，返回了一个内置了 <code>[[Call]]</code> method 和其他  essential internal method 和 slot 的函数对象。<br>而 <code>[[Call]]</code> 方法是就是调用函数时，JS 引擎内部调用的方法：</p>
+<blockquote>
+<p>The [[Call]] internal method for an ECMAScript function object F is called with parameters thisArgument and argumentsList, a List of ECMAScript language values. The following steps are taken:</p>
+<ol>
+<li>Assert: F is an ECMAScript function object.</li>
+<li>If F’s [[FunctionKind]] internal slot is “classConstructor”, throw a TypeError exception.</li>
+<li>Let callerContext be the running execution context.</li>
+<li>Let calleeContext be PrepareForOrdinaryCall(F, undefined).</li>
+<li>Assert: calleeContext is now the running execution context.</li>
+<li>Perform OrdinaryCallBindThis(F, calleeContext, thisArgument).</li>
+<li>Let result be <strong>OrdinaryCallEvaluateBody(F, argumentsList)</strong>.</li>
+<li>Remove calleeContext from the execution context stack and restore callerContext as the running execution context.</li>
+<li>If result.[[type]] is return, return NormalCompletion(result.[[value]]).</li>
+<li>ReturnIfAbrupt(result).</li>
+<li>Return NormalCompletion(undefined).</li>
+</ol>
+</blockquote>
+<p>继续追踪 OrdinaryCallEvaluateBody 方法就可以看到：</p>
+<blockquote>
+<p>When the abstract operation OrdinaryCallEvaluateBody is called with function object F and List argumentsList the following steps are taken:</p>
+<ol>
+<li>Let status be FunctionDeclarationInstantiation(F, argumentsList).</li>
+<li>ReturnIfAbrupt(status)</li>
+<li><strong>Return the result of EvaluateBody of the parsed code that is the value of F’s [[ECMAScriptCode]] internal slot passing F as the argument.</strong></li>
+</ol>
+</blockquote>
+<p>而 [[ECMAScriptCode]] 里存的是：</p>
+<blockquote>
+<p>Function code is source text that is parsed to supply the value of the [[ECMAScriptCode]] and [[FormalParameters]] internal slots (see 9.2) of an ECMAScript function object. The function code of a particular ECMAScript function does not include any source text that is parsed as the function code of a nested FunctionDeclaration, FunctionExpression, GeneratorDeclaration, GeneratorExpression, MethodDefinition, ArrowFunction, ClassDeclaration, or ClassExpression.</p>
+</blockquote>
+<p>也就是说 JS 引擎把解析好的函数体保存到 <code>[[ECMAScriptCode]]</code> internal slot 里，当调用函数的时候，就调用 <code>[[Call]]</code> internal method，最终返回解析 <code>[[ECMAScriptCode]]</code> 后的结果。而对于如何解析 <code>[[ECMAScriptCode]]</code>，这就涉及到编译原理和 JS 引擎的实现了，脱离了 ECMA-262 规范的范畴，就暂时先不去深入了。</p>
+<h2 id="合"><a href="#合" class="headerlink" title="合"></a>合</h2><p>简单的说，我们使用 JavaScript 的时候，实际上是没有所谓的“函数”的。函数就是对象，只是当我们在这个对象名称右边加上一个括号时，JS 引擎会自动帮我们调用这个对象内置的 <code>[[Call]]</code> 方法来执行定义在函数体里的内容。</p>
+<p>Ref:</p>
+<ul>
+<li><a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="external">http://www.ecma-international.org/ecma-262/6.0/</a></li>
+<li><a href="https://stackoverflow.com/questions/29592110/difference-between-accessor-property-and-data-property-in-ecmascript" target="_blank" rel="external">https://stackoverflow.com/questions/29592110/difference-between-accessor-property-and-data-property-in-ecmascript</a></li>
+<li><a href="https://stackoverflow.com/questions/33075262/what-is-an-internal-slot-of-an-object-in-javascript" target="_blank" rel="external">https://stackoverflow.com/questions/33075262/what-is-an-internal-slot-of-an-object-in-javascript</a></li>
+<li><a href="https://www.zhihu.com/question/24804474" target="_blank" rel="external">https://www.zhihu.com/question/24804474</a></li>
+<li><a href="https://www.zhihu.com/question/52561129" target="_blank" rel="external">https://www.zhihu.com/question/52561129</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag">#js</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/23/first-anniversary-of-graduation/" rel="next" title="毕业一周年">
+                <i class="fa fa-chevron-left"></i> 毕业一周年
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#起"><span class="nav-number">1.</span> <span class="nav-text">起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#承"><span class="nav-number">2.</span> <span class="nav-text">承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转"><span class="nav-number">3.</span> <span class="nav-text">转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#合"><span class="nav-number">4.</span> <span class="nav-text">合</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
