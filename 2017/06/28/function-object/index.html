@@ -88,10 +88,10 @@
 <meta name="keywords" content="js">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解函数对象">
-<meta property="og:url" content="https://sevody.github.io/2017/06/24/function-object/index.html">
+<meta property="og:url" content="https://sevody.github.io/2017/06/28/function-object/index.html">
 <meta property="og:site_name" content="Blick Winkel">
 <meta property="og:description" content="起由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。">
-<meta property="og:updated_time" content="2017-06-24T12:24:13.356Z">
+<meta property="og:updated_time" content="2017-06-28T08:29:10.867Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解函数对象">
 <meta name="twitter:description" content="起由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。">
@@ -115,7 +115,7 @@
 
 
 
-  <link rel="canonical" href="https://sevody.github.io/2017/06/24/function-object/"/>
+  <link rel="canonical" href="https://sevody.github.io/2017/06/28/function-object/"/>
 
   <title> 深入理解函数对象 | Blick Winkel </title>
 </head>
@@ -249,8 +249,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-06-24T19:43:13+08:00" content="2017-06-24">
-              2017-06-24
+            <time itemprop="dateCreated" datetime="2017-06-28T16:16:13+08:00" content="2017-06-28">
+              2017-06-28
             </time>
           </span>
 
@@ -280,7 +280,7 @@
         <h2 id="起"><a href="#起" class="headerlink" title="起"></a>起</h2><p>由于工作的需要，最近同时学习 go 和 vue。当结合着书上的教程，写了一段时间的 go 代码后，再看回 js 创建 vue 函数对象的代码，突然感觉一脸懵逼(´⊙ω⊙`)。</p>
 <a id="more"></a>
 <p>在 go 里，对象封装是通过 struct 实现的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Idol <span class="keyword">struct</span> &#123;</div><div class="line">  Name <span class="keyword">string</span></div><div class="line">  Age <span class="keyword">int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(idol *Idol)</span> <span class="title">sayHello</span><span class="params">()</span></span> &#123;</div><div class="line">  fmt.Printf(<span class="string">"私は%s, %d歳です。"</span>, idol.Name, idol.Age)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">  kotori := &amp;Idol&#123;Name:<span class="string">"南小鳥"</span>, Age: <span class="number">17</span>&#125;</div><div class="line">	kotori.sayHello()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> Idol <span class="keyword">struct</span> &#123;</div><div class="line">  Name <span class="keyword">string</span></div><div class="line">  Age <span class="keyword">int</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(idol *Idol)</span> <span class="title">sayHello</span><span class="params">()</span></span> &#123;</div><div class="line">  fmt.Printf(<span class="string">"私は%s, %d歳です。"</span>, idol.Name, idol.Age)</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">  kotori := &amp;Idol&#123;Name:<span class="string">"南小鳥"</span>, Age: <span class="number">17</span>&#125;</div><div class="line">  kotori.sayHello()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>嗯，这很好理解，把 struct 想象成 Object 就是了。</p>
 <p>然后回到 js :<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Vue.config.devtools = <span class="literal">true</span></div><div class="line"></div><div class="line">Vue.component(<span class="string">'my-component'</span>, &#123;</div><div class="line">  <span class="comment">// 选项</span></div><div class="line">&#125;)</div><div class="line"></div><div class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</div><div class="line">  <span class="attr">el</span>: <span class="string">'#some-element'</span>,</div><div class="line">  <span class="comment">// 选项</span></div><div class="line">&#125;)</div><div class="line"></div><div class="line">vm.$watch(</div><div class="line">  <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="comment">// do something</span></div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure></p>
 <p>什么鬼？Vue 是函数吧？为什么函数里还能设置属性，为什么函数还能调用方法？</p>
@@ -289,7 +289,7 @@
 <p>……………..过了大概 17 秒</p>
 <p>不行，还是好奇怪，在函数里用点操作符什么的，おかしい。在 js 的函数是对象，那函数体最后是怎么执行？</p>
 <p>私、気になる（千反田Geass）</p>
-<h2 id="承"><a href="#承" class="headerlink" title="承"></a>承</h2><p>我们先来看看 <a href="http://www.ecma-international.org/ecma-262/6.0" target="_blank" rel="external">spec</a> 关于函数对象的定义：</p>
+<h2 id="承"><a href="#承" class="headerlink" title="承"></a>承</h2><p>于是我们先来看看 <a href="http://www.ecma-international.org/ecma-262/6.0" target="_blank" rel="external">spec</a> 关于函数对象的定义：</p>
 <blockquote>
 <p>ECMAScript function objects encapsulate parameterized ECMAScript code closed over a lexical environment and support the dynamic evaluation of that code. <strong>An ECMAScript function object is an ordinary object and has the same internal slots and the same internal methods as other ordinary objects.</strong> The code of an ECMAScript function object may be either strict mode code (10.2.1) or non-strict mode code. An ECMAScript function object whose code is strict mode code is called a strict function. One whose code is not strict mode code is called a non-strict function.</p>
 </blockquote>
@@ -307,7 +307,7 @@
 <p><strong>Internal slots correspond to internal state that is associated with objects and used by various ECMAScript specification algorithms.</strong> Internal slots are not object properties and they are not inherited. Depending upon the specific internal slot specification, such state may consist of values of any ECMAScript language type or of specific ECMAScript specification type values. Unless explicitly specified otherwise, internal slots are allocated as part of the process of creating an object and may not be dynamically added to an object. Unless specified otherwise, the initial value of an internal slot is the value undefined. Various algorithms within this specification create objects that have internal slots. However, the ECMAScript language provides no direct way to associate internal slots with an object.</p>
 </blockquote>
 <p>Object 是一个属性的集合。每个属性既可以是一个命名数据属性，也可以是一个命名访问器属性。命名访问器属性也就是具有 <strong>[[Get]]</strong> 和 <strong>[[Set]]</strong> 特性的属性（vue 的响应式变量就是通过它们来实现的）。</p>
-<p>而 JS 引擎通过 internal method 来定义对象运行时的行为，通过 internal slot 来获取对象运行时的内部状态。对于 internal method 和 internal slot，用户不能直接访问它们，只能通过 JS 引擎提供的 API 访问。</p>
+<p>而 JS 引擎通过 internal method 来定义对象运行时的行为，通过 internal slot 来获取对象的内部状态。对于 internal method 和 internal slot，用户不能直接访问它们，只能通过 JS 引擎提供的 API 访问。</p>
 <p>对象基本的 internal method 有：<code>[[GetPrototypeOf]]</code>、<code>[[SetPrototypeOf]]</code>、<code>[[GetOwnProperty]]</code>、<code>[[GET]]</code>、<code>[[SET]]</code>、<code>[[Delete]]</code> 等等。</p>
 <p>对象基本的 internal slot 有：<code>[[Prototype]]</code>、<code>[[Extensible]]</code>。</p>
 <p>而对于函数对象：</p>
@@ -325,7 +325,7 @@
 <li>Return CreateDynamicFunction(C, NewTarget, “normal”, args).</li>
 </ol>
 </blockquote>
-<p>就结果而言，返回了一个内置了 <code>[[Call]]</code> method 和其他  essential internal method 和 slot 的函数对象。<br>而 <code>[[Call]]</code> 方法是就是调用函数时，JS 引擎内部调用的方法：</p>
+<p>CreateDynamicFunction 的定义太长，就不贴上来了。就结果而言，返回了一个内置了 <code>[[Call]]</code> method 和其他  essential internal method 和 slot 的函数对象。<br>而 <code>[[Call]]</code> 方法是就是调用函数时，JS 引擎内部调用的方法：</p>
 <blockquote>
 <p>The [[Call]] internal method for an ECMAScript function object F is called with parameters thisArgument and argumentsList, a List of ECMAScript language values. The following steps are taken:</p>
 <ol>
@@ -356,7 +356,7 @@
 <p>Function code is source text that is parsed to supply the value of the [[ECMAScriptCode]] and [[FormalParameters]] internal slots (see 9.2) of an ECMAScript function object. The function code of a particular ECMAScript function does not include any source text that is parsed as the function code of a nested FunctionDeclaration, FunctionExpression, GeneratorDeclaration, GeneratorExpression, MethodDefinition, ArrowFunction, ClassDeclaration, or ClassExpression.</p>
 </blockquote>
 <p>也就是说 JS 引擎把解析好的函数体保存到 <code>[[ECMAScriptCode]]</code> internal slot 里，当调用函数的时候，就调用 <code>[[Call]]</code> internal method，最终返回解析 <code>[[ECMAScriptCode]]</code> 后的结果。而对于如何解析 <code>[[ECMAScriptCode]]</code>，这就涉及到编译原理和 JS 引擎的实现了，脱离了 ECMA-262 规范的范畴，就暂时先不去深入了。</p>
-<h2 id="合"><a href="#合" class="headerlink" title="合"></a>合</h2><p>简单的说，我们使用 JavaScript 的时候，实际上是没有所谓的“函数”的。函数就是对象，只是当我们在这个对象名称右边加上一个括号时，JS 引擎会自动帮我们调用这个对象内置的 <code>[[Call]]</code> 方法来执行定义在函数体里的内容。</p>
+<h2 id="合"><a href="#合" class="headerlink" title="合"></a>合</h2><p>简单的说，我们使用 JavaScript 的时候，实际上是没有所谓的“函数”的。函数就是对象，只是当我们在这个对象名称右边加上一个括号（也就是调用函数）时，JS 引擎会自动帮我们调用这个对象内置的 <code>[[Call]]</code> 方法来执行定义在函数体里的内容。</p>
 <p>Ref:</p>
 <ul>
 <li><a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="external">http://www.ecma-international.org/ecma-262/6.0/</a></li>
