@@ -1,6 +1,6 @@
 ---
 title: 深入理解函数对象
-date: 2017-06-24 19:43:13
+date: 2017-06-28 16:16:13
 tags: js
 ---
 ## 起
@@ -24,7 +24,7 @@ func (idol *Idol) sayHello() {
 
 func main() {
   kotori := &Idol{Name:"南小鳥", Age: 17}
-	kotori.sayHello()
+  kotori.sayHello()
 }
 ```
 
@@ -64,7 +64,7 @@ vm.$watch(
 
 ## 承
 
-我们先来看看 [spec](http://www.ecma-international.org/ecma-262/6.0) 关于函数对象的定义：
+于是我们先来看看 [spec](http://www.ecma-international.org/ecma-262/6.0) 关于函数对象的定义：
 > ECMAScript function objects encapsulate parameterized ECMAScript code closed over a lexical environment and support the dynamic evaluation of that code. **An ECMAScript function object is an ordinary object and has the same internal slots and the same internal methods as other ordinary objects.** The code of an ECMAScript function object may be either strict mode code (10.2.1) or non-strict mode code. An ECMAScript function object whose code is strict mode code is called a strict function. One whose code is not strict mode code is called a non-strict function.
 
 函数对象是与普通对象有着相同 internal slot 和 internal method 的对象。那么 internal slot 和 internal method 是什么呢？
@@ -84,7 +84,7 @@ vm.$watch(
 
 Object 是一个属性的集合。每个属性既可以是一个命名数据属性，也可以是一个命名访问器属性。命名访问器属性也就是具有 **[[Get]]** 和 **[[Set]]** 特性的属性（vue 的响应式变量就是通过它们来实现的）。
 
-而 JS 引擎通过 internal method 来定义对象运行时的行为，通过 internal slot 来获取对象运行时的内部状态。对于 internal method 和 internal slot，用户不能直接访问它们，只能通过 JS 引擎提供的 API 访问。
+而 JS 引擎通过 internal method 来定义对象运行时的行为，通过 internal slot 来获取对象的内部状态。对于 internal method 和 internal slot，用户不能直接访问它们，只能通过 JS 引擎提供的 API 访问。
 
 对象基本的 internal method 有：`[[GetPrototypeOf]]`、`[[SetPrototypeOf]]`、`[[GetOwnProperty]]`、`[[GET]]`、`[[SET]]`、`[[Delete]]` 等等。
 
@@ -106,7 +106,7 @@ Object 是一个属性的集合。每个属性既可以是一个命名数据属�
   2. Let args be the argumentsList that was passed to this function by [[Call]] or [[Construct]].
   3. Return CreateDynamicFunction(C, NewTarget, "normal", args).
 
-就结果而言，返回了一个内置了 `[[Call]]` method 和其他  essential internal method 和 slot 的函数对象。
+CreateDynamicFunction 的定义太长，就不贴上来了。就结果而言，返回了一个内置了 `[[Call]]` method 和其他  essential internal method 和 slot 的函数对象。
 而 `[[Call]]` 方法是就是调用函数时，JS 引擎内部调用的方法：
 
 > The [[Call]] internal method for an ECMAScript function object F is called with parameters thisArgument and argumentsList, a List of ECMAScript language values. The following steps are taken:
@@ -135,7 +135,7 @@ Object 是一个属性的集合。每个属性既可以是一个命名数据属�
 
 ## 合
 
-简单的说，我们使用 JavaScript 的时候，实际上是没有所谓的“函数”的。函数就是对象，只是当我们在这个对象名称右边加上一个括号时，JS 引擎会自动帮我们调用这个对象内置的 `[[Call]]` 方法来执行定义在函数体里的内容。
+简单的说，我们使用 JavaScript 的时候，实际上是没有所谓的“函数”的。函数就是对象，只是当我们在这个对象名称右边加上一个括号（也就是调用函数）时，JS 引擎会自动帮我们调用这个对象内置的 `[[Call]]` 方法来执行定义在函数体里的内容。
 
 Ref:
 - http://www.ecma-international.org/ecma-262/6.0/
