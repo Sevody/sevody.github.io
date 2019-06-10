@@ -137,7 +137,7 @@ b.printB() //=> Uncaught TypeError: Cannot read property 'value' of undefined
 
 为什么会这样呢？这时候就需要祭出 **[ecma-262 标准](http://www.ecma-international.org/ecma-262/6.0/#sec-function.prototype.call)** 了。
 
-![](http://oj8psq2wh.bkt.clouddn.com/14883585623983.jpg)
+![](https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883585623983.jpg)
 
 由上图可以看到，调用 `call` 时，如果函数是箭头函数或者已经使用 `bind` 绑定了 this，那 `call` 传入的 this 就会被忽略掉。
 

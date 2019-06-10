@@ -61,4 +61,4 @@ componentWillUpdate(nextProps, nextState) {
 
 ## thought map
 
-![](http://oj8psq2wh.bkt.clouddn.com/14883644186426.jpg)
+![](https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883644186426.jpg)

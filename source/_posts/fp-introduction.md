@@ -95,7 +95,7 @@ IF(fls)(1)(2) //=> 2
 
 而这些编程范式的关系可以参考下面这张图：
 
-![paradigm_tree](http://oj8psq2wh.bkt.clouddn.com/paradigm_tree.jpg)
+![paradigm_tree](https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/paradigm_tree.jpg)
 
 编程范式的好处在于：易于在学校教学，引发讨论，区分编程语言。
 
@@ -105,7 +105,7 @@ IF(fls)(1)(2) //=> 2
 
 实际上大部分语言都是混合的，代码的风格不是由一小块代码决定，而是要从整体构架的角度出发。而Javascript是非纯函数式编程语言里最早在mainstream里加入函数式编程特性的语言。
 
-![language_style](http://oj8psq2wh.bkt.clouddn.com/language_style.jpg)
+![language_style](https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/language_programming.jpg)
 
 
 ## 为什么要函数式编程
