@@ -38,7 +38,7 @@ PS: Android 4.4+ 之前，`evaluateJavaScript` 函数是指 Webview 类的 `load
 
 ## 通信实现
 
-上面说的只是 H5 和 Native 之间通信的可能性，在实际业务中，还需要考虑到两者调用时参数传递的方式，抹平两端互相调用的细节，为 H5 业务层提供一致性的调用接口。
+前面说的只是 H5 和 Native 之间通信的可能性，在实际业务中，还需要考虑到两者调用时参数传递的方式，抹平两端互相调用的细节，为 H5 业务层提供一致性的调用接口。
 
 下面描述的是一个 H5 和 Native 之间的通信实现也即 JSBridge 可能的实现方式(从开源的 [hybrid-js](https://github.com/chemdemo/hybrid-js) 演化而来)，整个架构如下：
 
@@ -212,6 +212,8 @@ var responseCallbacks = {}; // 保存回调方法
     // ...
 }
 ```
+
+当 WebView 加载 H5 页面的时候，H5 需要加载一个地址为 *https://__bridge_loaded__* 的 iframe 通知 Native 端注入 JSBridge 通信相关的 JS 代码以完成初始化。
 
 下面以 H5 调用 Naive 定义的 `getUserData` 方法来获取 APP 的用户信息来进行登录操作为例，看看 WebViewJavascriptBridge 是怎样通信的，具体的调用逻辑如下图：
 
