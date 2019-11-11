@@ -144,14 +144,14 @@ webview.loadUrl("javascript:JSBridge.notifyH5(eventname[, data])")
 JSBridge.on(eventname, handler)
 ```
 
-内部则会发起类似 *myschema:listen?eventname=value* 的请求，同时用 eventname 的值为 key，把 handler 回调函数保存到回调函数列表中：
+内部则会发起类似 *myscheme:listen?eventname=value* 的请求，同时用 eventname 的值为 key，把 handler 回调函数保存到回调函数列表中：
 
 ```js
 JSBridge.on = (eventname, handler) {
   JSBridge.callbacks[eventname] = handler
   const frame = document.createElement('iframe')
   frame.style.display = 'none'
-  frame.src = `myschema:listen?eventname=${eventname}`
+  frame.src = `myscheme:listen?eventname=${eventname}`
   document.documentElement.appendChild(frame)
 }
 ```
