@@ -1091,7 +1091,7 @@ pre .javascript .function {
   box-sizing: border-box;
   margin: auto;
   padding: 3px;
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
 }
 .posts-expand .fancybox img {
   margin: 0 auto;
