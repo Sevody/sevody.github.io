@@ -239,6 +239,103 @@
             
               
                 
+                <a class="post-title-link" href="/2020/03/04/flutter-jsbridge-in-android/" itemprop="url">
+                  Flutter webview navigation delegate for subframes
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2020-03-04T10:15:23+08:00" content="2020-03-04">
+              2020-03-04
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>安卓的 Flutter APP 在 webview 容器内无法使用 jsbridge</p>
+<h2 id="详细描述"><a href="#详细描述" class="headerlink" title="详细描述"></a>详细描述</h2><p>在 Flutter APP 里，通过 <code>webview_flutter</code> 库创建 webview 容器，加载 H5 页面，通过 <code>navigationDelegate</code> 接口拦截 H5 页面的 url 跳转来实现 H5 跟 Flutter APP 的通信。但是，因为一般的 jsbridge 底层是使用生成 iframe 的方式来加载一个自定义协议来跟 APP 通信，这个在安卓上存在问题：Flutter 的 webview 容器没办法拦截 iframe 请求。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2020/03/04/flutter-jsbridge-in-android/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2019/11/10/jsbridge-mechanisms/" itemprop="url">
                   JSBridge 通信原理
                 </a>
@@ -796,111 +893,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/02/implicit-conversion-in-js/" itemprop="url">
-                  js 中的隐式类型转换
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-02T14:36:23+08:00" content="2017-03-02">
-              2017-03-02
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>As we all know，js 作为一门动态语言，<del>maybe</del>为了编写代码时能更简单和自由，于是有了隐式类型转换这个机制的存在。</p>
-<p>such as:</p>
-<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14884378226469.jpg" alt></p>
-<p>然而，方便的同时也带来的一个问题，就是一不小心就可能掉进隐式类型转换的陷阱。</p>
-<p>为了尽量避免掉进隐式类型转换的坑，下面就来看看隐式转换的<del>ひみつ</del>秘密。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/03/02/implicit-conversion-in-js/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -939,7 +936,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -986,7 +983,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
