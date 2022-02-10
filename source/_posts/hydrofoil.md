@@ -4,7 +4,7 @@ date: 2021-07-10 14:22:30
 tags: hybrid
 ---
 
-Hydrofoil 跨端容器是房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。
+Hydrofoil 跨端容器是我们房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。
 
 <!--more-->
 
