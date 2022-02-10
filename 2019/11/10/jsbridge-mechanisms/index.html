@@ -1,0 +1,635 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="存在背景随着移动互联网下半场的到来和产业互联网概念的兴起，越来越多的线下服务搬到了线上来。而对于只服务特定群体或者有限场景的业务，使用 iOS 和 Android 开发似乎成本过高了，于是 Hybrid APP、React Native、Weex、Flutter、小程序等技术方案层出不穷。其中，Hybrid APP 方案最容易在已有 Native APP 中实施且兼容性最好。Hybrid APP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JSBridge 通信原理">
+<meta property="og:url" content="https://sevody.github.io/2019/11/10/jsbridge-mechanisms/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="存在背景随着移动互联网下半场的到来和产业互联网概念的兴起，越来越多的线下服务搬到了线上来。而对于只服务特定群体或者有限场景的业务，使用 iOS 和 Android 开发似乎成本过高了，于是 Hybrid APP、React Native、Weex、Flutter、小程序等技术方案层出不穷。其中，Hybrid APP 方案最容易在已有 Native APP 中实施且兼容性最好。Hybrid APP">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-06_16-00-37.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_05-25-59.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_05-24-42.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-08_16-25-44.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_08-27-57.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-10_23-38-42.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-10_23-39-39.png">
+<meta property="og:updated_time" content="2022-02-10T08:10:27.309Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JSBridge 通信原理">
+<meta name="twitter:description" content="存在背景随着移动互联网下半场的到来和产业互联网概念的兴起，越来越多的线下服务搬到了线上来。而对于只服务特定群体或者有限场景的业务，使用 iOS 和 Android 开发似乎成本过高了，于是 Hybrid APP、React Native、Weex、Flutter、小程序等技术方案层出不穷。其中，Hybrid APP 方案最容易在已有 Native APP 中实施且兼容性最好。Hybrid APP">
+<meta name="twitter:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-06_16-00-37.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2019/11/10/jsbridge-mechanisms/"/>
+
+  <title> JSBridge 通信原理 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-159642565-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JSBridge 通信原理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-11-10T14:16:33+08:00" content="2019-11-10">
+              2019-11-10
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="存在背景"><a href="#存在背景" class="headerlink" title="存在背景"></a>存在背景</h2><p>随着移动互联网下半场的到来和产业互联网概念的兴起，越来越多的线下服务搬到了线上来。而对于只服务特定群体或者有限场景的业务，使用 iOS 和 Android 开发似乎成本过高了，于是 Hybrid APP、React Native、Weex、Flutter、小程序等技术方案层出不穷。其中，Hybrid APP 方案最容易在已有 Native APP 中实施且兼容性最好。Hybrid APP 即混合模式开发的 APP，它可以把低成本、高效率、跨平台的 H5 技术和追求极致用户体验的 Native 技术混合在一起来为用户提供服务。而 Hybrid 技术实施的前提，是实现 H5 和 Native APP 之间的通信，这个实现，我们称之为 JSBridge。</p>
+<a id="more"></a>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-06_16-00-37.png" alt="JSBridge"></p>
+<h2 id="通信基础"><a href="#通信基础" class="headerlink" title="通信基础"></a>通信基础</h2><p>所谓通信，是指发送者通过某种媒体以某种格式来传递信息到收信者以达致某个目的。所以通信的基础，是收信方必须能通过某种方式接收到发送方的信息。那么两个不同语言的平台 H5(JavaScript) 和 Native(Java/Object-C) 是怎么样实现消息传递的呢？</p>
+<p>首先要知道的是，Native(Java/Object-C) 的代码编译成二进制后，是操作系统(iOS/Andriod)来执行相关代码，从而作为一个 APP 运行。而对于 H5 ，是 Native 使用了一个 WebView 容器，在容器里解析相关的 HTML/CSS/JavaScript 代码，从而实现一个 Web 页面的显示。所以 H5 和 Native 的通信，实际上是 Native 代码通过 WebView 容器与 JavaScript 代码通信。</p>
+<h3 id="H5-调用-Native"><a href="#H5-调用-Native" class="headerlink" title="H5 调用 Native"></a>H5 调用 Native</h3><p>H5 调用 Native 在实现上有 2 种方式：</p>
+<ol>
+<li>理论上，无论是 iOS 还是 Android，提供的 WebView 容器是可以拦截一切 H5 发起的请求的，无论是标准协议（如 http://、https:// 等）还是私有协议（如 weixin:// ）。基于这个原理，H5 采用私有协议模拟发起 URL 请求，Native 解析这类 URL 并定制相应的处理函数，这就实现了 H5 调用 Native。</li>
+</ol>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_05-25-59.png" alt=""></p>
+<ol>
+<li>在 Native 的开发中，开发者可以给 WebView 容器注入全局变量并挂载在 <code>window</code> 对象上，这样前端 js 就可以通过 <code>window</code> 上全局对象方法 来调用一些 Native 的方法。这里需要注意的是方法注入的时机，一般是 WebView 一旦加载页面就需要注入变量。</li>
+</ol>
+<h3 id="Native-调用-H5"><a href="#Native-调用-H5" class="headerlink" title="Native 调用 H5"></a>Native 调用 H5</h3><p>上面提到的<em>给 WebView 容器注入全局变量并挂载在 <code>window</code> 对象上</em>，实际上是 Native 代码执行了一个 <code>evaluateJavaScript</code> 函数，直接运行 js 字符串代码(类似 js 的 eval 函数)，从而实现注入。所以 Native 代码也一样可以通过这个 <code>evaluateJavaScript</code> 函数来调用约定好的 js 函数来实现 H5 的调用。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_05-24-42.png" alt=""></p>
+<p>PS: Android 4.4+ 之前，<code>evaluateJavaScript</code> 函数是指 Webview 类的 <code>loadUrl</code> 方法，在 Android 4.4+ 之后，官方给提供了原生的 <code>evaluateJavascript</code> 方法支持调用 JS。 在 iOS 中，<code>evaluateJavaScript</code> 方法也有不同，在 UIWebView 中，iOS7+ 提供了 JavascriptCore 的 <code>evaluateScript</code> 方法，而 WKWebView 提供了 <code>evaluateJavaScript</code> 方法，两个 WebView 还提供了另外一种实现方式 <code>stringByEvaluatingJavaScriptFromString</code>。它们之间的区别就不在这里展开了，下面统一用 <code>evaluateJavaScript</code> 函数表示。</p>
+<h2 id="通信实现"><a href="#通信实现" class="headerlink" title="通信实现"></a>通信实现</h2><p>前面说的只是 H5 和 Native 之间通信的可能性，在实际业务中，还需要考虑到两者调用时参数传递的方式，抹平两端互相调用的细节，为 H5 业务层提供一致性的调用接口。</p>
+<p>下面描述的是一个 H5 和 Native 之间的通信实现也即 JSBridge 可能的实现方式(从开源的 <a href="https://github.com/chemdemo/hybrid-js" target="_blank" rel="noopener">hybrid-js</a> 演化而来)，整个架构如下：</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-08_16-25-44.png" alt=""></p>
+<h3 id="调用与回调"><a href="#调用与回调" class="headerlink" title="调用与回调"></a>调用与回调</h3><ul>
+<li>H5 调 Native：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSBridge.invokeNative(api, params)</span><br></pre></td></tr></table></figure>
+<p>这是 H5 调用 Native 的抽象，而 <code>invokeNative</code> 可以用私有协议的方式实现，也可以用注入全局变量的方式实现。一般来讲，两种方式没有什么优劣之分，不过，私有协议是监听 WebView 请求，比较通用，而变量注入是 WebView 加载时注入，注入时机不对的话容易出问题，下面的方案都采用私有协议来实现。</p>
+<p>前面说过， WebView 可以拦截 H5 发起的 URL 请求， 通过对约定规则的 URL 进行解析，即可实现 H5 调用 Native。而这个 URl 请求， H5 可以通过加载 <code>iframe</code> 来发起：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> frame = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>)</span><br><span class="line">frame.style.display = <span class="string">'none'</span></span><br><span class="line">frame.src = <span class="string">'myscheme://method?params=value'</span></span><br><span class="line"><span class="built_in">document</span>.documentElement.appendChild(frame)</span><br></pre></td></tr></table></figure>
+<p>Native 拦截到 <code>myscheme</code> 的请求后，就解析 URL 上面的 method 和 params，并把它们传到对应的处理函数。</p>
+<ul>
+<li>Native 调 H5：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// android</span><br><span class="line">webview.loadUrl(&quot;javascript:JSBridge.invokeH5(api[, ...args])&quot;) </span><br><span class="line"></span><br><span class="line">// iOS</span><br><span class="line">[self.webView evaluateJavaScript:&quot;javascript:JSBridge.invokeH5(api[, ...args])&quot; completionHandler:nil]</span><br></pre></td></tr></table></figure>
+<p><code>invokeH5</code> 函数是 Native 调 H5 的入口，在这之前，H5 需要声明全局对象 <code>JSBridge</code> 和实现对应的 <code>invokeH5</code>方法。</p>
+<p>H5 和 Native 之间的调用不都是单向的，还需要考虑回调的情况。</p>
+<p>由于同时存在 H5 调用 Native 然后 Native 再回调 H5，和 Native 调用 H5 然后 H5 再返回值给 Native 的情况，所以这里将发起请求的一方叫调用方，另一方叫被调方。为了区分多次不同的调用，在调用方发起请求时会带上一个特殊的标记 <strong>sn</strong>，这样保证回调的顺序不乱。</p>
+<p>同时由于调用方调用被调用方和调用方回调被调用方在代码层面都是同一个接口（例如 H5 调用 Native API 和 H5 回调 Native 的调用这两种情况都是调用 JSBridge.invokeNative 方法），为了区分本次调用是 API 调用还是回调调用，sn 需要做区分，比如请求方带过去的 key 名叫 <strong>req_sn</strong>，回调带过去的叫 <strong>res_sn</strong>。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-09_08-27-57.png" alt=""></p>
+<p>发起带 <strong>req_sn</strong> 的请求前，如果有回调函数，会以 <strong>req_sn</strong> 的值为 key，把回调函数存到对应的回调函数列表。当接收到带有 <strong>res_sn</strong> 的调用后，会以 <strong>res_sn</strong> 的值为 key，从对应的回调函数列表取出回调函数，并以接收到的数据为参数，执行回调函数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> current_sn = <span class="number">1</span> <span class="comment">// sn 需要保持唯一</span></span><br><span class="line">JSBridge.callbacks = []</span><br><span class="line"></span><br><span class="line"><span class="comment">// H5 调用 Native 入口</span></span><br><span class="line">JSBridge.invokeNative = <span class="function">(<span class="params">api, params</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; callback, ...data &#125; = params</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> callback === <span class="string">'function'</span>) &#123;</span><br><span class="line">    <span class="comment">// 把回调放到回调函数列表</span></span><br><span class="line">    JSBridge.callbacks[current_sn] = callback</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> frame = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>)</span><br><span class="line">  frame.style.display = <span class="string">'none'</span></span><br><span class="line">  frame.src = <span class="string">`myscheme://<span class="subst">$&#123;api&#125;</span>?<span class="subst">$&#123;querystring.parse(data)&amp;req_sn=$&#123;current_sn&#125;</span>&#125;`</span></span><br><span class="line">  <span class="built_in">document</span>.documentElement.appendChild(frame)</span><br><span class="line">  current_sn += <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Native 调用 H5 入口</span></span><br><span class="line">JSBridge.invokeH5 = <span class="function">(<span class="params">api, params</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; res_sn, ...data &#125; = params</span><br><span class="line">  <span class="keyword">if</span> (res_sn) &#123;</span><br><span class="line">    <span class="comment">// 回调</span></span><br><span class="line">    <span class="keyword">if</span> (JSBridge.callbacks[res_sn]) &#123;</span><br><span class="line">      <span class="keyword">const</span> callback = JSBridge.callbacks[res_sn]</span><br><span class="line">      <span class="keyword">delete</span> JSBridge.callbacks[res_sn]</span><br><span class="line">      <span class="keyword">return</span> callback(data)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// 非回调的情况，调用对应的 api 处理函数</span></span><br><span class="line">    <span class="keyword">return</span> callApi(api, params)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="事件监听"><a href="#事件监听" class="headerlink" title="事件监听"></a>事件监听</h3><p>在实际业务中，除了 H5 和 Native 之间的主动回调，还有很多事件监听的需求，比如 H5 需要在 APP 分享成功之后传递分享成功事件给 H5 来做一些业务逻辑。而这些事件其实和 push 很相似，都是一方主动向另一方推送一些数据，而自己不需要知道对方是否接收以及处理结果。</p>
+<p>所以事件和 API 调用的接口可以是分开的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// android</span><br><span class="line">webview.loadUrl(&quot;javascript:JSBridge.notifyH5(eventname[, data])&quot;) </span><br><span class="line"></span><br><span class="line">// iOS</span><br><span class="line">[self.webView evaluateJavaScript:&quot;javascript:JSBridge.notifyH5(eventname[, data])&quot; completionHandler:nil]</span><br></pre></td></tr></table></figure>
+<p>如上述，Native 通过 JSBridge.notifyH5 接口向 H5 推送事件，第一个参数是事件名，理论上事件可以是 Native 真实的事件，也可以是自定义事件，第二个参数是事件对应的对象。</p>
+<p>不过，如果事件是键盘事件或其他交互事件，每次都传递给 H5 看起来似乎没有必要，在 Web 世界中事件都遵循<strong>监听则处理，不监听则不处理</strong>的原则，所以这里对于交互事件，还需要一个监听的操作，即 H5 事先告诉 Native 需要监听某个事件，当事件真正发生时 Native 才会传递给 H5：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JSBridge.on(eventname, handler)</span><br></pre></td></tr></table></figure>
+<p>内部则会发起类似 <em>myscheme:listen?eventname=value</em> 的请求，同时用 eventname 的值为 key，把 handler 回调函数保存到回调函数列表中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">JSBridge.on = (eventname, handler) &#123;</span><br><span class="line">  JSBridge.callbacks[eventname] = handler</span><br><span class="line">  <span class="keyword">const</span> frame = <span class="built_in">document</span>.createElement(<span class="string">'iframe'</span>)</span><br><span class="line">  frame.style.display = <span class="string">'none'</span></span><br><span class="line">  frame.src = <span class="string">`myscheme:listen?eventname=<span class="subst">$&#123;eventname&#125;</span>`</span></span><br><span class="line">  <span class="built_in">document</span>.documentElement.appendChild(frame)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当 Native 调用了 <code>notifyH5</code> 后，JS 就可以通过 eventname 从回调函数列表取出 handler 并执行，实现回调。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">JSBridge.notifyH5 = <span class="function">(<span class="params">eventname, data</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (JSBridge.callbacks[eventname]) &#123;</span><br><span class="line">    JSBridge.callbacks[eventname](data)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="更优雅的实现"><a href="#更优雅的实现" class="headerlink" title="更优雅的实现"></a>更优雅的实现</h3><p>上面的 JSBridge 通信设计是考虑到大部分调用场景的其中一种实现方式，事实上，只要 H5 和 Native 约定好规则，你完全可以针对自己的需求，有不同的实现方式。另外，JSBridge 通信跟实际业务是分离的，不同的 Hybrid APP 完全可以使用同一套通信实现。实际上，目前很多 iOS 端 Hybrid APP 的 JSBridge 通信实现都使用了一个名为 <a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="noopener">WebViewJavascriptBridge</a> 的开源库，它实现了 JS 和 Object-C 的之间的通信，是一种更优雅的通信实现。</p>
+<p>PS：android 端为了保持 H5 调用接口的统一，一般也设计成跟 WebViewJavascriptBridge 一样的通信方式，开源实现可以参考 <a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="noopener">lzyzsd/JsBridge</a>。</p>
+<p>那么，下面就来看下 WebViewJavascriptBridge 的实现原理。</p>
+<p>首先，H5 端定义了 4 个方法和 3 个数据结构：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WebViewJavascriptBridge_JS.m</span></span><br><span class="line"><span class="built_in">window</span>.WebViewJavascriptBridge = &#123;</span><br><span class="line">  registerHandler: registerHandler, <span class="comment">// 注册供 Native 调用的 JS 方法</span></span><br><span class="line">  callHandler: callHandler, <span class="comment">// 调用 Native 端的方法</span></span><br><span class="line">  _fetchQueue: _fetchQueue, <span class="comment">// 供 Native 调用，取出 sendMessageQueue 的数据</span></span><br><span class="line">  _handleMessageFromObjC: _handleMessageFromObjC <span class="comment">// 供 Native 调用，把通信消息传给 H5</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sendMessageQueue = []; <span class="comment">// 保存要传给 Native 的通信消息</span></span><br><span class="line"><span class="keyword">var</span> messageHandlers = &#123;&#125;; <span class="comment">// 保存注册的 JS 方法</span></span><br><span class="line"><span class="keyword">var</span> responseCallbacks = &#123;&#125;; <span class="comment">// 保存回调方法</span></span><br></pre></td></tr></table></figure>
+<p>同时，Native 端也定义了 2 个对应的方法和 2 个数据结构：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WKWebViewJavascriptBridge.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">WKWebViewJavascriptBridge</span> : <span class="title">NSObject</span>&lt;<span class="title">WKNavigationDelegate</span>, <span class="title">WebViewJavascriptBridgeBaseDelegate</span>&gt;</span></span><br><span class="line"><span class="comment">// 注册供 JS 调用的 Native 方法</span></span><br><span class="line">- (<span class="keyword">void</span>)registerHandler:(<span class="built_in">NSString</span>*)handlerName handler:(WVJBHandler)handler;</span><br><span class="line"><span class="comment">// 调用 JS 端的方法</span></span><br><span class="line">- (<span class="keyword">void</span>)callHandler:(<span class="built_in">NSString</span>*)handlerName data:(<span class="keyword">id</span>)data responseCallback:(WVJBResponseCallback)responseCallback;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// WebViewJavascriptBridgeBase.m</span></span><br><span class="line">- (<span class="keyword">id</span>)init &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">        <span class="keyword">self</span>.messageHandlers = [<span class="built_in">NSMutableDictionary</span> dictionary]; <span class="comment">// 保存注册的 Native 方法</span></span><br><span class="line">        <span class="keyword">self</span>.responseCallbacks = [<span class="built_in">NSMutableDictionary</span> dictionary]; <span class="comment">// 保存回调方法</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当 WebView 加载 H5 页面的时候，H5 需要加载一个地址为 <em>https://<strong>bridge_loaded</strong></em> 的 iframe 通知 Native 端注入 JSBridge 通信相关的 JS 代码以完成初始化。</p>
+<p>下面以 H5 调用 Naive 定义的 <code>getUserData</code> 方法来获取 APP 的用户信息来进行登录操作为例，看看 WebViewJavascriptBridge 是怎样通信的，具体的调用逻辑如下图：</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-10_23-38-42.png" alt=""></p>
+<p>可以看出，与第一种实现方式不同的是，H5 传递消息给 Native 的时候，只是通过加载地址为 <em>https://<strong>wvjb_queue_message</strong></em> 的iframe 来告知 Native 有新的消息，具体的信息存到了 <code>sendMessageQueue</code> 队列里。不过，一样的是，每个调用的回调都是通过唯一的id来识别的(callbackId对应req_sn，responseId对应res_sn)。</p>
+<p>虽然 Hybrid APP 的通信基本上都是 H5 调 Native， 不过也存在 Native 调用 H5 的需求，比如 Native 需要截取 H5 页面特定区域的截图来生成海报图片。Native 可以通过调用 H5 定义的 <code>getArea</code> 来获取特定区域的坐标轴和宽高来确定截取图的区域，具体的调用逻辑如下图：</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/Snipaste_2019-11-10_23-39-39.png" alt=""></p>
+<p>从上图可以看出，Native 调用 H5 基本上是 H5 调用 Native 的一个镜像操作，无论调用还是回调，实现逻辑都是一致的。H5 和 Native 就像桥的两端，WebViewJavascriptBridge 就是对称地架在它们之间的桥梁，无论是从 H5 到 Native 还是 Native 到 H5，走到对面的方式都是一样的。</p>
+<p>这就是 WebViewJavascriptBridge 的设计美学：<strong>接口对等</strong>，<strong>逻辑对称</strong>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过上面的剖析，我们了解了 JSBridge 实现通信的基本原理。同时，通过两种不同的 JSBridge 实现方式的对比，我们看到了代码设计的美学。正如吴军在《数学之美》上所说：<strong>数学之美，首先在于其内容或许复杂而深奥，但形式常常很简单。简单即是美，这不仅在科学和工程上成立，而且在产品开发和设计上也是如此。</strong></p>
+<p>Ref:<br><a href="https://github.com/marcuswestin/WebViewJavascriptBridge" target="_blank" rel="noopener">https://github.com/marcuswestin/WebViewJavascriptBridge</a><br><a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="noopener">https://github.com/lzyzsd/JsBridge</a><br><a href="https://github.com/chemdemo/hybrid-js" target="_blank" rel="noopener">https://github.com/chemdemo/hybrid-js</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/02/third-anniversary-of-graduation/" rel="next" title="迟来的毕业三周年">
+                <i class="fa fa-chevron-left"></i> 迟来的毕业三周年
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/04/flutter-jsbridge-in-android/" rel="prev" title="Flutter webview navigation delegate for subframes">
+                Flutter webview navigation delegate for subframes <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#存在背景"><span class="nav-number">1.</span> <span class="nav-text">存在背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信基础"><span class="nav-number">2.</span> <span class="nav-text">通信基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#H5-调用-Native"><span class="nav-number">2.1.</span> <span class="nav-text">H5 调用 Native</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Native-调用-H5"><span class="nav-number">2.2.</span> <span class="nav-text">Native 调用 H5</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通信实现"><span class="nav-number">3.</span> <span class="nav-text">通信实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#调用与回调"><span class="nav-number">3.1.</span> <span class="nav-text">调用与回调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件监听"><span class="nav-number">3.2.</span> <span class="nav-text">事件监听</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更优雅的实现"><span class="nav-number">3.3.</span> <span class="nav-text">更优雅的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

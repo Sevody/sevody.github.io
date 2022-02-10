@@ -1,0 +1,733 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="js," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="As we all know，js 作为一门动态语言，maybe为了编写代码时能更简单和自由，于是有了隐式类型转换这个机制的存在。 such as:  然而，方便的同时也带来的一个问题，就是一不小心就可能掉进隐式类型转换的陷阱。 为了尽量避免掉进隐式类型转换的坑，下面就来看看隐式转换的ひみつ秘密。">
+<meta name="keywords" content="js">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js 中的隐式类型转换">
+<meta property="og:url" content="https://sevody.github.io/2017/03/02/implicit-conversion-in-js/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="As we all know，js 作为一门动态语言，maybe为了编写代码时能更简单和自由，于是有了隐式类型转换这个机制的存在。 such as:  然而，方便的同时也带来的一个问题，就是一不小心就可能掉进隐式类型转换的陷阱。 为了尽量避免掉进隐式类型转换的坑，下面就来看看隐式转换的ひみつ秘密。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14884378226469.jpg">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883389389148.jpg">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883389522106.jpg">
+<meta property="og:updated_time" content="2022-02-10T08:10:27.306Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js 中的隐式类型转换">
+<meta name="twitter:description" content="As we all know，js 作为一门动态语言，maybe为了编写代码时能更简单和自由，于是有了隐式类型转换这个机制的存在。 such as:  然而，方便的同时也带来的一个问题，就是一不小心就可能掉进隐式类型转换的陷阱。 为了尽量避免掉进隐式类型转换的坑，下面就来看看隐式转换的ひみつ秘密。">
+<meta name="twitter:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14884378226469.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2017/03/02/implicit-conversion-in-js/"/>
+
+  <title> js 中的隐式类型转换 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-159642565-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                js 中的隐式类型转换
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-02T14:36:23+08:00" content="2017-03-02">
+              2017-03-02
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>As we all know，js 作为一门动态语言，<del>maybe</del>为了编写代码时能更简单和自由，于是有了隐式类型转换这个机制的存在。</p>
+<p>such as:</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14884378226469.jpg" alt=""></p>
+<p>然而，方便的同时也带来的一个问题，就是一不小心就可能掉进隐式类型转换的陷阱。</p>
+<p>为了尽量避免掉进隐式类型转换的坑，下面就来看看隐式转换的<del>ひみつ</del>秘密。</p>
+<a id="more"></a>
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><h3 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h3><p>js（es5） <del>规定了</del>有 5 中原始类型和 1 种复杂类型：</p>
+<p><em>primitive</em>： <strong>undefined</strong>, <strong>null</strong>, <strong>boolean</strong>, <strong>number</strong>, <strong>string</strong></p>
+<p><em>non-primitive</em>： <strong>object</strong> (包括 Array, Function, Date, Reg)</p>
+<p>类型转换的操作有：<strong>ToPrimitive</strong>、<strong>toBoolean</strong>、<strong>toNumber</strong>、<strong>toString</strong></p>
+<h3 id="ToPrimitive"><a href="#ToPrimitive" class="headerlink" title="ToPrimitive"></a>ToPrimitive</h3><p>ToPromitive 是指转换为基本类型，JavaScript引擎内部的抽象操作 <code>ToPrimitive()</code> 有着这样的声明:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ToPrimitive(input [,PreferredType])</span><br></pre></td></tr></table></figure>
+<p>可选参数 PreferredType 可以是 Number 或者 String，它只代表了一个转换的偏好，转换结果不一定必须是这个参数所指的类型，但转换结果一定是一个原始值。如果 PreferredType 被标志为 Number,则会进行下面的操作来转换输入的值</p>
+<ol>
+<li>如果输入的值已经是个原始值,则直接返回它</li>
+<li>否则，如果输入的值是一个对象。则调用该对象的 <code>valueOf()</code> 方法。如果 <code>valueOf()</code> 方法的返回值是一个原始值,则返回这个原始值</li>
+<li>否则，调用这个对象的 <code>toString()</code> 方法。如果 <code>toString()</code> 方法的返回值是一个原始值，则返回这个原始值</li>
+<li>否则，抛出 TypeError 异常</li>
+</ol>
+<p>如果 PreferredType 被标志为 String，则转换操作的第二步和第三步的顺序会调换。<br>如果 PreferredType 被省略，除了 Date 类型的对象进行 ToPrimitive 时 PreferredType 会被设置为 String，其它类型的值会被设置为 Number。</p>
+<h3 id="toBoolean"><a href="#toBoolean" class="headerlink" title="toBoolean"></a>toBoolean</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>undefined</td>
+<td>false</td>
+</tr>
+<tr>
+<td>null</td>
+<td>false</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>无需转换</td>
+</tr>
+<tr>
+<td>number</td>
+<td>0 / Nan =&gt; false; else true</td>
+</tr>
+<tr>
+<td>string</td>
+<td>‘’ =&gt; false; else true</td>
+</tr>
+<tr>
+<td>object</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toNumber"><a href="#toNumber" class="headerlink" title="toNumber"></a>toNumber</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>undefined</td>
+<td>NaN</td>
+</tr>
+<tr>
+<td>null</td>
+<td>0</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>1 / 0</td>
+</tr>
+<tr>
+<td>number</td>
+<td>无需转换</td>
+</tr>
+<tr>
+<td>string</td>
+<td>‘123’ =&gt; 123; ‘12a’ =&gt; NaN; ‘’ =&gt; 0</td>
+</tr>
+<tr>
+<td>object</td>
+<td>先 ToPrimitive(object)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>undefined</td>
+<td>‘undefined’</td>
+</tr>
+<tr>
+<td>null</td>
+<td>‘null’</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>‘true’ / ‘false’</td>
+</tr>
+<tr>
+<td>number</td>
+<td>123 =&gt; ‘123’; 1.23 =&gt; ‘1.23’</td>
+</tr>
+<tr>
+<td>string</td>
+<td>无需转换</td>
+</tr>
+<tr>
+<td>object</td>
+<td>先 ToPrimitive(object)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="‘-’-运算符的隐式转换"><a href="#‘-’-运算符的隐式转换" class="headerlink" title="‘==’ 运算符的隐式转换"></a><strong>‘==’</strong> 运算符的隐式转换</h2><p>js 中可以使用 <code>==</code> 和 <code>===</code> 运算符进行相等性判断，其中 <code>==</code> 运算符会进行隐式转换。</p>
+<p><code>==</code> 计算规则如下：</p>
+<ol>
+<li>如果两个值类型一致，则使用 <code>===</code> 进行判断</li>
+<li>如果一个值是 null，另一个值是 undefined，则两者相等</li>
+<li>如果一个值是 number，另一个值是 string，则把 string 转换为 number 再进行比较</li>
+<li>如果其中一个值为 boolean，则把它转换为 number，在比较</li>
+<li>如果一个值 object，另一个值是 number 或者 string，则把 object 转换为 primitive 在进行比较</li>
+<li>其他类型之间比较均不相等</li>
+</ol>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883389389148.jpg" alt=""></p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/14883389522106.jpg" alt=""></p>
+<h2 id="‘-lt-’、‘-gt-’-运算符的隐式转换"><a href="#‘-lt-’、‘-gt-’-运算符的隐式转换" class="headerlink" title="‘&lt;’、‘&gt;’ 运算符的隐式转换"></a><strong>‘&lt;’</strong>、<strong>‘&gt;’</strong> 运算符的隐式转换</h2><p>进行 <code>&lt;</code> 、 <code>&gt;</code> 判断时，通常只有两种情况：数字和数字比较，字符串和字符串比较。其他所有类型比较都会返回 <strong>false</strong>。</p>
+<ol>
+<li>将两个操作数转换为 primitive<br> prim1 = ToPrimitive(value1)<br> prim2 = ToPrimitive(value2)</li>
+<li>如果 prim1 和 prim2 中都为 string，逐个比较每个字符的 code value，返回比较结果</li>
+<li>否则将 prim1 和 prim2 都转换为 number 类型，返回比较结果</li>
+</ol>
+<p>伪代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a &lt; b:</span><br><span class="line">    pa = ToPrimitive(a)</span><br><span class="line">    pb = ToPrimitive(b)</span><br><span class="line">    if(pa is string &amp;&amp; pb is string)</span><br><span class="line">       return compareUnitCodeValue(pa, pb）</span><br><span class="line">    else</span><br><span class="line">       return compare(ToNumber(pa), ToNumber(pb))</span><br></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&apos;&apos; &lt; &apos;a&apos; // =&gt; true</span><br><span class="line">[] &lt; &apos;a&apos; // =&gt; true</span><br><span class="line">&apos;1&apos; &lt; &apos;a&apos; // =&gt; true</span><br><span class="line">1 &lt; &apos;a&apos; // =&gt; false</span><br><span class="line">NaN &lt; 1 // =&gt; false</span><br></pre></td></tr></table></figure>
+<h2 id="‘-’-运算符的隐式转换-1"><a href="#‘-’-运算符的隐式转换-1" class="headerlink" title="‘+’ 运算符的隐式转换"></a><strong>‘+’</strong> 运算符的隐式转换</h2><p>在 js 中，<code>+</code> 运算符通常只有两种情况：数字和数字相加，字符串和字符串相加。其他所有类型都会被转换成这两种类型的值。</p>
+<p>其内部操作步骤如下：</p>
+<ol>
+<li>将两个操作数转换为 primitive<br> prim1 = ToPrimitive(value1)<br> prim2 = ToPrimitive(value2)</li>
+<li>如果 prim1 或者 prim2 中任意一个为 string，则另一个也转换为 string，然后返回两个 string 连接操作后的结果</li>
+<li>否则将 prim1 和 prim2 都转换为 number 类型，返回两者之和</li>
+</ol>
+<p>伪代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">a + b:</span><br><span class="line">    pa = ToPrimitive(a)</span><br><span class="line">    pb = ToPrimitive(b)*</span><br><span class="line">    if(pa is string || pb is string)</span><br><span class="line">       return concat(ToString(pa), ToString(pb))</span><br><span class="line">    else</span><br><span class="line">       return add(ToNumber(pa), ToNumber(pb))</span><br></pre></td></tr></table></figure>
+<h2 id="‘-‘、‘-’、‘-‘-运算符的隐式转换"><a href="#‘-‘、‘-’、‘-‘-运算符的隐式转换" class="headerlink" title="‘-‘、‘*’、‘/‘ 运算符的隐式转换"></a><strong>‘-‘</strong>、<strong>‘*’</strong>、<strong>‘/‘</strong> 运算符的隐式转换</h2><p>与 <code>+</code> 运算符类似，但只要 number 类型的操作，其他所有类型都会转换为 number 后才进行操作，无法转换为 number 的，操作结果为 NaN</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在进行相等判断的时候，空值判断可以使用 <code>==</code> 来进行判断，其他情况优先使用 <code>===</code>；其他运算符需要注意操作数最终是转换为 number 进行运算还是转换为 string 进行运算。</p>
+<h2 id="Ref"><a href="#Ref" class="headerlink" title="Ref"></a>Ref</h2><ul>
+<li><a href="http://www.ecma-international.org/ecma-262/6.0" target="_blank" rel="noopener">http://www.ecma-international.org/ecma-262/6.0</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Equality_comparisons_and_sameness" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Equality_comparisons_and_sameness</a></li>
+<li><a href="http://www.2ality.com/2012/01/object-plus-object.html" target="_blank" rel="noopener">http://www.2ality.com/2012/01/object-plus-object.html</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/js/" rel="tag">#js</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/28/base-module-repo-config/" rel="next" title="react 模块仓库基础设施">
+                <i class="fa fa-chevron-left"></i> react 模块仓库基础设施
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/23/first-anniversary-of-graduation/" rel="prev" title="毕业一周年">
+                毕业一周年 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#类型转换"><span class="nav-number">1.</span> <span class="nav-text">类型转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本类型"><span class="nav-number">1.1.</span> <span class="nav-text">基本类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ToPrimitive"><span class="nav-number">1.2.</span> <span class="nav-text">ToPrimitive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toBoolean"><span class="nav-number">1.3.</span> <span class="nav-text">toBoolean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toNumber"><span class="nav-number">1.4.</span> <span class="nav-text">toNumber</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#toString-NaN"><span class="nav-number">1.5.</span> <span class="nav-text">toString</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#‘-’-运算符的隐式转换"><span class="nav-number">2.</span> <span class="nav-text">‘==’ 运算符的隐式转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#‘-lt-’、‘-gt-’-运算符的隐式转换"><span class="nav-number">3.</span> <span class="nav-text">‘&lt;’、‘&gt;’ 运算符的隐式转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#‘-’-运算符的隐式转换-1"><span class="nav-number">4.</span> <span class="nav-text">‘+’ 运算符的隐式转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#‘-‘、‘-’、‘-‘-运算符的隐式转换"><span class="nav-number">5.</span> <span class="nav-text">‘-‘、‘*’、‘/‘ 运算符的隐式转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ref"><span class="nav-number">7.</span> <span class="nav-text">Ref</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

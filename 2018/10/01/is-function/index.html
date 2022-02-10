@@ -1,0 +1,672 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="1234567891011121314// 使用 instanceof 判断function isFun(v) &amp;#123;  return v instanceof Function&amp;#125;// 使用 typeof 判断function isFun2(v) &amp;#123;  return typeof v === &apos;function&apos;&amp;#125;// 使用 toString 判断functio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何判断变量是否是函数">
+<meta property="og:url" content="https://sevody.github.io/2018/10/01/is-function/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="1234567891011121314// 使用 instanceof 判断function isFun(v) &amp;#123;  return v instanceof Function&amp;#125;// 使用 typeof 判断function isFun2(v) &amp;#123;  return typeof v === &apos;function&apos;&amp;#125;// 使用 toString 判断functio">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-02-10T08:10:27.307Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何判断变量是否是函数">
+<meta name="twitter:description" content="1234567891011121314// 使用 instanceof 判断function isFun(v) &amp;#123;  return v instanceof Function&amp;#125;// 使用 typeof 判断function isFun2(v) &amp;#123;  return typeof v === &apos;function&apos;&amp;#125;// 使用 toString 判断functio">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2018/10/01/is-function/"/>
+
+  <title> 如何判断变量是否是函数 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-159642565-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何判断变量是否是函数
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-10-01T16:24:40+08:00" content="2018-10-01">
+              2018-10-01
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 instanceof 判断</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFun</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> v <span class="keyword">instanceof</span> <span class="built_in">Function</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 typeof 判断</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFun2</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> v === <span class="string">'function'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 toString 判断</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFun3</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(v) === <span class="string">'[object Function]'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这3种方法都能判断变量是否是函数，但也存在一些的区别和问题，下面来具体看看。</p>
+<a id="more"></a>
+<h2 id="使用-instanceof-判断"><a href="#使用-instanceof-判断" class="headerlink" title="使用 instanceof 判断"></a>使用 instanceof 判断</h2><p><code>instanceof</code> 运算符用来检测 <code>constructor.prototype</code> 是否存在于参数 <code>object</code> 的原型链上。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span> <span class="keyword">instanceof</span> <span class="built_in">Date</span>; <span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] <span class="keyword">instanceof</span> <span class="built_in">Array</span>; <span class="comment">// true</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">CustomType</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"><span class="keyword">new</span> CustomType <span class="keyword">instanceof</span> CustomType; <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>在开头的 <code>isFun</code> 函数中，也就是检测 <code>Object.getPrototypeOf(v) === Function.prototype</code>。</p>
+<p>然而在浏览器中，我们的代码可能需要在多个窗口之间进行交互。多个窗口意味着多个全局环境，不同的全局环境拥有不同的全局对象，从而拥有不同的内置类型构造函数。这可能会引发一些问题。比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> iFrame = <span class="built_in">document</span>.createElement(<span class="string">'IFRAME'</span>);</span><br><span class="line"><span class="built_in">document</span>.body.appendChild(iFrame);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">let</span> IFrameArray = <span class="built_in">window</span>.frames[<span class="number">1</span>].Array; </span><br><span class="line"><span class="keyword">let</span> array = <span class="keyword">new</span> IFrameArray();</span><br><span class="line"> </span><br><span class="line">array <span class="keyword">instanceof</span> <span class="built_in">Array</span>; <span class="comment">// false</span></span><br><span class="line">array <span class="keyword">instanceof</span> IFrameArray; <span class="comment">// true;</span></span><br></pre></td></tr></table></figure>
+<p>所以使用 <code>instanceof</code> 来判断变量是否是函数在这种场景下并不可靠。</p>
+<h2 id="使用-typeof-判断"><a href="#使用-typeof-判断" class="headerlink" title="使用 typeof 判断"></a>使用 typeof 判断</h2><p><code>typeof</code> 操作符返回一个字符串，表示未经计算的操作数的类型。</p>
+<table>
+<thead>
+<tr>
+<th>Type of val</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Undefined</td>
+<td>‘undefined’</td>
+</tr>
+<tr>
+<td>Null</td>
+<td>‘object’</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>‘boolean’</td>
+</tr>
+<tr>
+<td>Number</td>
+<td>‘number’</td>
+</tr>
+<tr>
+<td>String</td>
+<td>‘string’</td>
+</tr>
+<tr>
+<td>Object(native and not callable)</td>
+<td>‘object’</td>
+</tr>
+<tr>
+<td>Object(native or host and callable)</td>
+<td>‘function’</td>
+</tr>
+</tbody>
+</table>
+<p>值得注意的是，在 JavaScript 最初的实现中，JavaScript 中的值是由一个表示类型的标签和实际数据值表示的。对象的类型标签是 <code>0</code>。由于 <code>null</code> 代表的是空指针（大多数平台下值为 <code>0x00</code>），因此，<code>null</code> 的类型标签是 <code>0</code>，<code>typeof null</code> 也因此返回 <code>&#39;object&#39;</code>。</p>
+<p>在 ECMAScript 2015 之前，<code>typeof</code> 总能保证对任何所给的操作数返回一个字符串。即便是没有声明的标识符，<code>typeof</code> 也能返回 <code>&#39;undefined&#39;</code>。使用 <code>typeof</code> 永远不会抛出错误。</p>
+<p>但在加入了块级作用域的 <code>let</code> 和 <code>const</code> 之后，在其被声明之前对块中的 <code>let</code> 和 <code>const</code> 变量使用 <code>typeof</code> 会抛出一个 <code>ReferenceError</code>。块作用域变量在块的头部处于“暂存死区”，直至其被初始化，在这期间，访问变量将会引发错误。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> undeclaredVariable === <span class="string">'undefined'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typeof</span> newLetVariable; <span class="comment">// ReferenceError</span></span><br><span class="line"><span class="keyword">typeof</span> newConstVariable; <span class="comment">// ReferenceError</span></span><br><span class="line"><span class="keyword">typeof</span> newClass; <span class="comment">// ReferenceError</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> newLetVariable;</span><br><span class="line"><span class="keyword">const</span> newConstVariable = <span class="string">'hello'</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">newClass</span></span>&#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p>回到一开始的问题，在 2018 年的现在，使用 <code>typeof</code> 判断变量是否是函数，并没有什么问题。然而我们如果看一下有不短历史的开源仓库的代码，判断变量是否是函数很少会使用 <code>typeof</code> 来实现的。究其原因，实际上是因为在一些很久之前的浏览器版本，判断<strong>正则表达式</strong>的时候，<code>typeof</code> 会返回 <code>&#39;function&#39;</code>，比如 <em>PhantomJS v1</em> 和 <em>Chrome 1-12</em>。所以，如果你不必兼容这些老版本的浏览器，可以放心使用 <code>typeof</code>。</p>
+<h2 id="使用-toString-判断"><a href="#使用-toString-判断" class="headerlink" title="使用 toString 判断"></a>使用 toString 判断</h2><p>使用 <code>Object.prototype.toString</code> 来判断变量是否是函数是兼容性最好的，唯一的问题是，可读性比较差，不太好理解。</p>
+<p>要理解为什么 <code>Object.prototype.toString</code> 能判断变量是否是函数，首先要知道的是这个方法的定义是什么。然而需要注意的是，<code>Object.prototype.toString</code> 这个方法的定义在 <a href="http://ecma-international.org/ecma-262/5.1/" target="_blank" rel="noopener">ES5 spec</a> 和 <a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="noopener">ES6 spec</a> 中是有些不一样的。</p>
+<p>以前在<a href="https://sevody.github.io/2017/06/28/function-object/">深入理解函数对象</a>中提到过 <strong>Object 是一个属性的集合，每个对象对象有着对应的 internal slot 和 internal method</strong>，而在 ES5 spec 中， <code>[[Class]]</code> 就是对象里面的一个 <code>internal slot</code> (ES spec 一般用双方括号 <code>[[]]</code> 来标识内置属性，比如 <code>[[Get]]</code> 、<code>[[Set]]</code> 、 <code>[[Prototype]]</code>  、 <code>[[Extensible]]</code> 等)。而根据 ES5 sepc，<code>[[CLass]]</code> 的<a href="http://ecma-international.org/ecma-262/5.1/#sec-8.6.2" target="_blank" rel="noopener">定义</a>是：<em>A String value indicating a specification defined classification of objects.</em> 也就是每个内建的对象都会有一个对应的不可修改的 <code>[[Class]]</code> 属性来表明该对象属于哪种类型的对象。</p>
+<p>那么再看下 <code>Object.prototype.toString</code> 在 ES5 spec 的<a href="http://ecma-international.org/ecma-262/5.1/#sec-15.2.4.2" target="_blank" rel="noopener">定义</a>:</p>
+<blockquote>
+<ol>
+<li>If the this value is undefined, return “[object Undefined]”.</li>
+<li>If the this value is null, return “[object Null]”.</li>
+<li>Let O be the result of calling ToObject passing the this value as the argument.</li>
+<li>Let class be the value of the [[Class]] internal property of O.</li>
+<li>Return the String value that is the result of concatenating the three Strings “[object “, class, and “]”.</li>
+</ol>
+</blockquote>
+<p>简单来说，对象默认的 <code>toString</code> 方法就是返回 <strong>`object ${[[Class]]}`</strong> 这样格式的字符串。</p>
+<p>而需要注意的是，内建对象的 <code>Object.prototype.toString</code> 方法基本上都会被覆盖：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>].toString() <span class="comment">// '1, 2, 3'</span></span><br><span class="line"> </span><br><span class="line">(<span class="keyword">new</span> <span class="built_in">Date</span>).toString() <span class="comment">// 'Mon Oct 01 2018 22:31:15 GMT+0800 (中国标准时间)'</span></span><br><span class="line"> </span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123;&#125;).toString() <span class="comment">// 'function f() &#123;&#125;'</span></span><br></pre></td></tr></table></figure>
+<p>所以我们必须用 <code>call</code> 方法来调用 <code>Object.prototype.toString</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.prototype.toString.call([<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]) <span class="comment">// '[object Array]'</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="keyword">new</span> <span class="built_in">Date</span>) <span class="comment">// '[object Date]'</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call((<span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123;&#125;)) <span class="comment">// '[object Function]'</span></span><br></pre></td></tr></table></figure>
+<p>所以判断变量是否是函数就可以这么实现：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isFun3</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.toString.call(v) === <span class="string">'[object Function]'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而到了 ES6 spec，<code>[[Class]]</code> 内置属性被去掉了，取而代之的是一个名为 <code>@@toStringTag</code> 的 <code>Symbol</code>。它的具体<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-well-known-symbols" target="_blank" rel="noopener">定义</a>是 <em>A String valued property that is used in the creation of the default string description of an object. Accessed by the built-in method Object.prototype.toString.</em> </p>
+<p>在 ES6 spec 中，<code>Object.prototype.toString</code> 的<a href="http://www.ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring" target="_blank" rel="noopener">定义</a>也变成了：</p>
+<blockquote>
+<ol>
+<li>If the this value is undefined, return “[object Undefined]”.</li>
+<li>If the this value is null, return “[object Null]”.</li>
+<li>Let O be ToObject(this value).</li>
+<li>Let isArray be IsArray(O).</li>
+<li>ReturnIfAbrupt(isArray).</li>
+<li>If isArray is true, let builtinTag be “Array”.</li>
+<li>Else, if O is an exotic String object, let builtinTag be “String”.</li>
+<li>Else, if O has an [[ParameterMap]] internal slot, let builtinTag be “Arguments”.</li>
+<li>Else, if O has a [[Call]] internal method, let builtinTag be “Function”.</li>
+<li>Else, if O has an [[ErrorData]] internal slot, let builtinTag be “Error”.</li>
+<li>Else, if O has a [[BooleanData]] internal slot, let builtinTag be “Boolean”.</li>
+<li>Else, if O has a [[NumberData]] internal slot, let builtinTag be “Number”.</li>
+<li>Else, if O has a [[DateValue]] internal slot, let builtinTag be “Date”.</li>
+<li>Else, if O has a [[RegExpMatcher]] internal slot, let builtinTag be “RegExp”.</li>
+<li>Else, let builtinTag be “Object”.</li>
+<li>Let tag be Get (O, @@toStringTag).</li>
+<li>ReturnIfAbrupt(tag).</li>
+<li>If Type(tag) is not String, let tag be builtinTag.</li>
+<li>Return the String that is the result of concatenating “[object “, tag, and “]”.</li>
+</ol>
+</blockquote>
+<p>注意 <em>16. Let tag be Get (O, @@toStringTag)</em> ，在 ES5 的时候，自定义的对象调用 <code>Object.prototype.toString</code> 的时候只能返回内置的默认类型：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ValidatorClass</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="keyword">new</span> ValidatorClass()); <span class="comment">// '[object Object]'</span></span><br></pre></td></tr></table></figure>
+<p>而在 ES6，自定义对象的 <code>Object.prototype.toString</code> 的返回结果变得可修改了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ValidatorClass</span> </span>&#123;</span><br><span class="line">  get [<span class="built_in">Symbol</span>.toStringTag]() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Validator"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString.call(<span class="keyword">new</span> ValidatorClass()); <span class="comment">// '[object Validator]'</span></span><br></pre></td></tr></table></figure>
+<p>不过从判断变量是否是函数这个问题上看，ES5 和 ES6 返回的结果都是一样的，所以可以尽情使用 <code>Object.prototype.toString.call(v) === &#39;[object Function]&#39;</code> 来实现。</p>
+<p>Ref</p>
+<ul>
+<li><a href="http://ecma-international.org/ecma-262/5.1/" target="_blank" rel="noopener">http://ecma-international.org/ecma-262/5.1/</a></li>
+<li><a href="http://www.ecma-international.org/ecma-262/6.0/" target="_blank" rel="noopener">http://www.ecma-international.org/ecma-262/6.0/</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag" target="_blank" rel="noopener">https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toStringTag</a></li>
+<li><a href="https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator" target="_blank" rel="noopener">https://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/15/fp-introduction/" rel="next" title="JavaScript 函数式编程">
+                <i class="fa fa-chevron-left"></i> JavaScript 函数式编程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/02/third-anniversary-of-graduation/" rel="prev" title="迟来的毕业三周年">
+                迟来的毕业三周年 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-instanceof-判断"><span class="nav-number">1.</span> <span class="nav-text">使用 instanceof 判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-typeof-判断"><span class="nav-number">2.</span> <span class="nav-text">使用 typeof 判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-toString-判断"><span class="nav-number">3.</span> <span class="nav-text">使用 toString 判断</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

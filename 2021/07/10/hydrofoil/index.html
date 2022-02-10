@@ -1,0 +1,678 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="hybrid," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Hydrofoil 跨端容器是我们房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。">
+<meta name="keywords" content="hybrid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="房多多 Hydrofoil 跨端容器">
+<meta property="og:url" content="https://sevody.github.io/2021/07/10/hydrofoil/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="Hydrofoil 跨端容器是我们房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%201.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%202.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%203.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/hydrofoil_architecture.jpg">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%204.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/web_protocol.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%205.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%206.png">
+<meta property="og:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%207.png">
+<meta property="og:updated_time" content="2022-02-10T08:10:27.302Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="房多多 Hydrofoil 跨端容器">
+<meta name="twitter:description" content="Hydrofoil 跨端容器是我们房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。">
+<meta name="twitter:image" content="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2021/07/10/hydrofoil/"/>
+
+  <title> 房多多 Hydrofoil 跨端容器 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-159642565-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                房多多 Hydrofoil 跨端容器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2021-07-10T14:22:30+08:00" content="2021-07-10">
+              2021-07-10
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Hydrofoil 跨端容器是我们房多多大前端团队为了实现同时使用 Web、Flutter、Native 三种技术而开发的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端(由 Web 或 Flutter 实现)很容易获得 Native 端的底层能力。</p>
+<a id="more"></a>
+<h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h2><p>随着 iOS 和安卓两个平台开发范式的稳定和组件功能的沉淀，出于开发效率和动态化的需求，降低试错成本，跨端运行的混合开发模式一直在发展，从 Webview 容器 到 React Native 再到 Flutter，大前端的概念也渐渐兴起。</p>
+<h3 id="1-1-Webview-容器"><a href="#1-1-Webview-容器" class="headerlink" title="1.1 Webview 容器"></a>1.1 Webview 容器</h3><p>Webview 容器技术是指将 Web 技术与 Native 技术结合起来，基于 Web 技术来实现页面和业务功能，将操作系统底层的 API 通过封装的<strong>桥协议（JSBridge）</strong>暴露给 JavaScript 调用，Web 编写的代码可以在原生提供的 Webview 容器里运行起来。这种模式的好处是能复用已有的 Web 页面，极大的降低开发成本，更新也不需要发版。但是原生的 Webview 组件渲染性能不高，对于交互比较复杂的场景，用户体验难以保证。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled.png"></p>
+<h3 id="1-2-React-Native"><a href="#1-2-React-Native" class="headerlink" title="1.2 React Native"></a>1.2 React Native</h3><p>2013 年，Facebook 推出了 React 前端框架，它是一个为数据提供渲染为 HTML 视图的开源 JavaScript 库。React 采用了<strong>虚拟 DOM</strong> 的方式来分离数据逻辑和实际渲染，在这种渲染模式启发下，2015 年，Facebook 又推出了 React Native。React Native 和 Webview 容器不同之处在于把实际渲染放到了原生来实现。通过事先定义的 DSL （React 的 JSX 语法），数据逻辑变动后，会生成一个虚拟 DOM 树，然后由 Native 端解析和映射并渲染成平台的组件。这种方案对于体验会有一定的提升，不过在一些极端的场景（比如无限滚动列表）还是有一定的性能问题。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%201.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%201.png"></p>
+<h3 id="1-3-Flutter"><a href="#1-3-Flutter" class="headerlink" title="1.3 Flutter"></a>1.3 Flutter</h3><p>2018 年 12 月初，Google 推出了 Flutter 1.0 稳定版，它是通过 Dart 语言构建的一套跨平台开发组件。与 Webview 容器、React Native 不同的是，它没有使用 Webview 或者系统平台自带的原生控件，而是有一套自己的 Widget，所有组件都是基于自建的 Skia 渲染引擎自绘，性能上能与 Native 平台的 View 相媲美。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%202.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%202.png"></p>
+<p>房多多的前端混合开发历程也经历了 Webview 容器阶段、尝试过 React Native，并处在 Flutter 实际使用阶段，在不同阶段都遇到了一些需要解决的问题。而 Webview 和 Flutter 两种模式在 App 中同时存在，也导致了跨端调用出现了一定的混乱和重复开发。正如混合开发是为了实现 <code>Write Once，Run Both（iOS &amp; Android）</code> ， 为了践行<code>Add One, Run Both（Webview &amp; Flutter）</code> ，Hydrofoil 跨端容器应运而生。</p>
+<h2 id="2-Hydrofoil-容器"><a href="#2-Hydrofoil-容器" class="headerlink" title="2. Hydrofoil 容器"></a>2. Hydrofoil 容器</h2><h3 id="2-1-什么是-Hydrofoil-容器"><a href="#2-1-什么是-Hydrofoil-容器" class="headerlink" title="2.1 什么是 Hydrofoil 容器"></a>2.1 什么是 Hydrofoil 容器</h3><blockquote>
+<p>Hydrofoil 即水翼船。这种船底部装上了类似翅膀的部件，使船体行驶时可以离开水面，快速航行。</p>
+</blockquote>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%203.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%203.png"></p>
+<p>Hydrofoil 容器是为了实现 Web、Flutter、Native 三端间的相互调用开发出来的底层框架。通过引入 Hydrofoil 跨端容器，一个 App 能很简单的实现 Web 和 Flutter 跟 Native 间的通信，并通过各端预定义的 SDK，业务端（由 Web 或 Flutter 实现）很容易获得 Native 端的底层能力。</p>
+<h3 id="2-2-为什么需要-Hydrofoil-容器"><a href="#2-2-为什么需要-Hydrofoil-容器" class="headerlink" title="2.2 为什么需要 Hydrofoil 容器"></a>2.2 为什么需要 Hydrofoil 容器</h3><p>前面提到，我们房多多前端团队在实践混合开发的时候，遇到了一些问题，其中最突出的问题是平台内部各个 App 用的混合技术栈不统一，有的 App 用到了 Flutter，有的没有用，有的用了不同版本的 Webview 容器等等。而如果使用一个统一的跨端容器，不但有利于当前 App 技术栈的统一，降低维护成本，也能让新 App 快速接入混合开发技术，并高度复用已有代码。比如我们最新开发的<strong>房云 App</strong>，因为需要在短周期内快速上线，我们接入了 Hydrofoil 容器后，能直接复用已有的 Flutter、Web 代码，甚至因为容器打通了 Native、Web、Flutter 三端，能在保证用户体验的基础上，只使用 Web、Flutter 开发新的业务页面，实现了 App 的快速上线，正如加上了翅膀的水翼船（Hydrofoil）一般，快速航行（上线）。</p>
+<h2 id="3-架构设计"><a href="#3-架构设计" class="headerlink" title="3. 架构设计"></a>3. 架构设计</h2><h3 id="3-1-整体架构"><a href="#3-1-整体架构" class="headerlink" title="3.1 整体架构"></a>3.1 整体架构</h3><p>Hydrofoil 跨端容器以 Hydrofoil Core 为核心，实现了底层的消息分发和响应回调，并实现了路由的统一调度。Native SDK 提供了底层能力的实现，并通过 Web SDK 和 Flutter SDK 为业务层提供可调用的 API。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/hydrofoil_architecture.jpg" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/hydrofoil_architecture.jpg"></p>
+<h3 id="3-2-Hydrofoil-Core"><a href="#3-2-Hydrofoil-Core" class="headerlink" title="3.2 Hydrofoil Core"></a>3.2 Hydrofoil Core</h3><p>Hydrofoil Core 提供了混合开发的<strong><em>运行环境</em></strong>、<strong><em>路由调度</em></strong>和<strong><em>底层通信</em></strong>。它主要包含三个部分：<strong>FddWebview</strong>、<strong>FddFlutter</strong>、<strong>调度中心</strong>。</p>
+<ul>
+<li><strong>FddWebview</strong> 模块提供了房多多内部定制的 Webview 容器，来由它来加载 Web 页面，并实现与 Native 端的通信，是实现 Web 与 Native 混合开发技术的核心。</li>
+<li><strong>FddFlutter</strong> 模块提供了 Flutter 容器，它内置了 Flutter SDK，并且封装了通信等相关模块，使得 App 接入 Hydrofoil 容器后，能直接使用 Flutter 技术进行开发。</li>
+<li><strong>调度中心</strong>模块主要负责统一 Webview 和 Flutter 容器的路由管理和 API 调用，是与外部 SDK 的通信的统一出入口。</li>
+</ul>
+<h3 id="3-3-SDK"><a href="#3-3-SDK" class="headerlink" title="3.3 SDK"></a>3.3 SDK</h3><p>各端都有对应的 SDK 实现：</p>
+<ul>
+<li><strong>Native SDK</strong> 负责提供操作系统底层能力，比如网络、设备信息等。也可以对一些第三方功能如上传、IM 等进行一定程度的收敛。</li>
+<li><strong>Web SDK</strong> 作为 Webview 容器和业务方的 Web 代码之间通信的胶水层，并为 Web 端提供对应的语言化接口</li>
+<li><strong>Flutter SDK</strong> 主要是对 Flutter 可以调用的底层系统能力的统一收敛，为 Flutter 端提供可直接调用的 API 接口。</li>
+</ul>
+<h3 id="3-4-扩展性"><a href="#3-4-扩展性" class="headerlink" title="3.4 扩展性"></a>3.4 扩展性</h3><p>前端近些年发展迅速，跨平台方案也在大量涌现，例如市占较高的 Weex、RN、UniApp、mPaaS 等。由于 Hydrofoil 将各平台容器以及路由和通信细节封装起来，业务侧各技术栈的交互均可通过提供的自定义协议进行，做了很好的解耦，故需要引入新的跨平台方案时，只需在 Hydrofoil 内进行容器通信及 SDK 的扩展即可，业务侧几乎无需做任何变更即可进行跨平台的调度。</p>
+<h2 id="4-模块设计"><a href="#4-模块设计" class="headerlink" title="4. 模块设计"></a>4. 模块设计</h2><h3 id="4-1-Hydrofoil-Core-模块"><a href="#4-1-Hydrofoil-Core-模块" class="headerlink" title="4.1 Hydrofoil Core 模块"></a>4.1 Hydrofoil Core 模块</h3><p>Hydrofoil Core 对外提供了 5 个最基本的方法：<code>init</code>、<code>open</code> 、<code>close</code>、<code>call</code>、<code>register</code>。其中 <code>init</code> 方法主要是对容器做一些初始化工作，比如注入支持的协议、配置 ua 标识等等；<code>open</code> 和 <code>close</code> 方法负责路由调度，打开或者关闭指定的路由；<code>call</code> 和 <code>register</code> 方法负责三端 SDK 方法的注册和调用。</p>
+<p>上面的 5 个基本方法，Hydrofoil Core 通过在不同维度封装不同的逻辑模块来实现：</p>
+<ul>
+<li>容器顶层是 <strong>HyWebviewContainer</strong> 和 <strong>HyFlutterContainer</strong>，是 Webview 容器和 Flutter 容器的载体。<code>init</code> 方法提供的参数会落到 <strong>HyWebviewContainer</strong> 和 <strong>HyFlutterContainer</strong> 内部执行具体的初始化流程。</li>
+<li>路由调度统一收敛到了 <strong>HyRouterComponent</strong>，根据 <code>open</code> 方法传入的<strong>协议类型（protocol）HyRouterComponent</strong> 会决定具体调用哪种类型的 controller/activity 进行加载、渲染。</li>
+<li><strong>HyHandlerComponent</strong> 模块统一管理各个容器的 API 调用和底层通信，<code>call</code>、<code>register</code> 被调用后，由 <strong>HyHandlerComponent</strong> 把消息传递到容器各自的 Channel。</li>
+</ul>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%204.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%204.png"></p>
+<h3 id="4-2-SDK-模块"><a href="#4-2-SDK-模块" class="headerlink" title="4.2 SDK 模块"></a>4.2 SDK 模块</h3><p>为了给业务端提供底层能力，Hydrofoil 容器会提供对应功能的 API 给业务方调用。但是 API 的开发和实现不是一蹴而就的，会随着业务需求的变化而更迭版本，各端的 API 可能会有不同程度的变化。为了避免命名的冲突和保证功能的唯一性，我们使用唯一的 <strong>id</strong> 来作为三端 API 共同的标识。比如，打开指定路由的 id 标识是 1001、关闭路由的标识是 1002。</p>
+<p>但是这样的方式会带来一些问题：业务方每次使用容器 API 都需要去翻阅文档，看看对应的 id 代表什么功能，代码可读性太差。为了解决这个问题，Web SDK 和 Flutter SDK 会收敛这些 id，并提供更语义化的 API 供业务方调用。而在三端的 SDK 内部，会维护一份类似这样的表格对 API 进行管理：</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/web_protocol.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/web_protocol.png"></p>
+<p>当业务方调用 <code>router.open</code> 方法时，Web SDK 会发送一个 id 为 <strong>1001</strong> 消息给 Native SDK，Native SDK 检测到 <strong>1001</strong> 这个 id 的消息后，调用 <code>Hy.open</code> 方法打开消息里指定的路由页面。而当需要新增 API 时，只需三端约定一个统一的 id，然后在表格后添加对应的方法注释。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// router.js 路由模块</span></span><br><span class="line"><span class="keyword">const</span> router = &#123;</span><br><span class="line">  open: [</span><br><span class="line">    &#123;</span><br><span class="line">      handler(options) &#123;</span><br><span class="line">				<span class="comment">// 把三端约定的id传入Bridge</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.invoke(<span class="number">1001</span>, options);</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// bridge.js</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bridge</span> </span>&#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">const</span> init = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">		<span class="comment">// 动态解析模块方法</span></span><br><span class="line">	  <span class="keyword">const</span> ext = Extension(Bridge);</span><br><span class="line">	  ext.gen(<span class="string">'event'</span>, alias.event);</span><br><span class="line">	  ext.gen(<span class="string">'router'</span>, alias.router);</span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 收敛底层调用入口</span></span><br><span class="line">	<span class="keyword">async</span> invoke(type, data = &#123;&#125;, additional = &#123;&#125;) &#123;</span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">	  <span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 获取桥实例</span></span><br><span class="line">	    <span class="keyword">const</span> bridge = <span class="keyword">await</span> connect();</span><br><span class="line">			<span class="comment">// 通过 Promise 返回给调用方</span></span><br><span class="line">	    <span class="keyword">return</span> <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> bridge.callHandler(<span class="string">'jsInvokeNative'</span>, dataJson, (result) =&gt; resolve(result)));</span><br><span class="line">	  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">	    <span class="comment">// ...</span></span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用方</span></span><br><span class="line"><span class="comment">// demo.js</span></span><br><span class="line"><span class="keyword">import</span> jsbridge <span class="keyword">from</span> <span class="string">'@fdd/hydrofoil-jsbridge'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过调用 webSDK 提供的语义化方法，打开新路由</span></span><br><span class="line">jsbridge.router.open(&#123;</span><br><span class="line">  url: <span class="string">'xxxxx'</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="5-通信实现"><a href="#5-通信实现" class="headerlink" title="5. 通信实现"></a>5. 通信实现</h2><p>Hydrofoil 容器内部有 Hydrofoil Core 模块和各端对应的 SDK 模块，而各个模块可能运行在不同的代码引擎中，它们间方法的调用，需要使用特定的通信方式来实现。</p>
+<h3 id="5-1-Web-与-Native-通信"><a href="#5-1-Web-与-Native-通信" class="headerlink" title="5.1 Web 与 Native 通信"></a>5.1 Web 与 Native 通信</h3><p>实际上，Web 和 Native 之间有 2 种方式实现通信：</p>
+<ol>
+<li>无论是 iOS 还是 Android，提供的 Webview 容器是可以拦截一切 Web 端发起的请求的，无论是标准协议（如 http://、https:// 等）还是私有协议（如 weixin:// ）。基于这个原理，Web 采用私有协议模拟发起 URL 请求，Native 解析这类 URL 并定制相应的处理函数，这就实现了 Web 与 Native 的通信。</li>
+<li>在 Native 的开发中，开发者可以给 Webview 容器注入全局变量并挂载在 <code>window</code> 对象上，这样前端的 JavaScript 代码就可以通过 <code>window</code> 上全局对象方法来调用事先注入的函数，实现通信。</li>
+</ol>
+<p>而在 Hydrofoil 容器，为了实现 Web 和 Native 的双向调用，同时使用了上面的两种方式，底层的 iOS 和 Android 都使用了一套统一的 <strong>WebViewJavascriptBridge</strong> 通信实现。</p>
+<p>首先，Web 端定义了 4 个方法和 3 个数据结构：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WebViewJavascriptBridge_JS.m</span></span><br><span class="line"><span class="built_in">window</span>.WebViewJavascriptBridge = &#123;</span><br><span class="line">  registerHandler: registerHandler, <span class="comment">// 注册供 Native 调用的 JS 方法</span></span><br><span class="line">  callHandler: callHandler, <span class="comment">// 调用 Native 端的方法</span></span><br><span class="line">  _fetchQueue: _fetchQueue, <span class="comment">// 供 Native 调用，取出 sendMessageQueue 的数据</span></span><br><span class="line">  _handleMessageFromObjC: _handleMessageFromObjC, <span class="comment">// 供 Native 调用，把通信消息传给 Web</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sendMessageQueue = []; <span class="comment">// 保存要传给 Native 的通信消息</span></span><br><span class="line"><span class="keyword">var</span> messageHandlers = &#123;&#125;; <span class="comment">// 保存注册的 JS 方法</span></span><br><span class="line"><span class="keyword">var</span> responseCallbacks = &#123;&#125;; <span class="comment">// 保存回调方法</span></span><br></pre></td></tr></table></figure>
+<p>同时，Native 端也定义了 2 个对应的方法和 2 个数据结构：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// WKWebViewJavascriptBridge.m</span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">WKWebViewJavascriptBridge</span> : <span class="title">NSObject</span>&lt;<span class="title">WKNavigationDelegate</span>, <span class="title">WebViewJavascriptBridgeBaseDelegate</span>&gt;</span></span><br><span class="line"><span class="comment">// 注册供 JS 调用的 Native 方法</span></span><br><span class="line">- (<span class="keyword">void</span>)registerHandler:(<span class="built_in">NSString</span>*)handlerName handler:(WVJBHandler)handler;</span><br><span class="line"><span class="comment">// 调用 JS 端的方法</span></span><br><span class="line">- (<span class="keyword">void</span>)callHandler:(<span class="built_in">NSString</span>*)handlerName data:(<span class="keyword">id</span>)data responseCallback:(WVJBResponseCallback)responseCallback;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// WebViewJavascriptBridgeBase.m</span></span><br><span class="line">- (<span class="keyword">id</span>)init &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span> = [<span class="keyword">super</span> init]) &#123;</span><br><span class="line">        <span class="keyword">self</span>.messageHandlers = [<span class="built_in">NSMutableDictionary</span> dictionary]; <span class="comment">// 保存注册的 Native 方法</span></span><br><span class="line">        <span class="keyword">self</span>.responseCallbacks = [<span class="built_in">NSMutableDictionary</span> dictionary]; <span class="comment">// 保存回调方法</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以 Web 调用 Native 定义的 <code>getUser</code> 方法来获取 App 的用户信息来进行登录操作为例，具体的调用逻辑如下图：</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%205.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%205.png"></p>
+<p>实际上，Web 传递消息给 Native 的时候，只是通过加载地址为 <a href="https://wvjb_queue_message" target="_blank" rel="noopener">https://wvjb_queue_message</a> 的 iframe 来告知 Native 有新的消息，具体的信息存到了 <strong>sendMessageQueue</strong> 队列里，每个调用的回调都是通过唯一的 id 来识别的（callbackId 和 responseId），以此来保证回调消息的顺序。</p>
+<h3 id="5-2-Flutter-和-Native-通信"><a href="#5-2-Flutter-和-Native-通信" class="headerlink" title="5.2 Flutter 和 Native 通信"></a>5.2 Flutter 和 Native 通信</h3><p>对于页面路由，我们使用了 <strong>FlutterBoost</strong> 来提供底层的路由映射能力，而对于 Flutter 与 Native 间的事件通知和方法调用，使用了 <strong>Method Channel</strong> 进行通信，并在此基础上做了一定程度的封装。</p>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%206.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%206.png"></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fdd_channel.dart</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FddChannel</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 初始化MethodChannel，通过该channel统一管理所有的事件通知&amp;方法调用</span></span><br><span class="line">  <span class="keyword">final</span> MethodChannel _methodChannel = MethodChannel(<span class="string">"fdd_channel"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 管理事件监听</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">List</span>&lt;EventListener&gt;&gt; _eventListeners = <span class="built_in">Map</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 管理方法调用</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Set</span>&lt;MethodHandler&gt; _methodHandlers = <span class="built_in">Set</span>();</span><br><span class="line"></span><br><span class="line">  FddChannel() &#123;</span><br><span class="line">    _methodChannel.setMethodCallHandler((MethodCall call) &#123;</span><br><span class="line">			<span class="comment">// 遍历methodHandler集合，处理native端到flutter端的方法调用</span></span><br><span class="line">			<span class="comment">// ...</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> sendEvent(<span class="built_in">String</span> name, <span class="built_in">Map</span> arguments) &#123;</span><br><span class="line">    <span class="comment">// flutter端通过methodChannel向native发送事件</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  VoidCallback addEventListener(<span class="built_in">String</span> name, EventListener listener) &#123;</span><br><span class="line">		<span class="comment">// 添加事件监听，用于处理native端发送到flutter端的事件</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ... ...</span></span><br><span class="line"></span><br><span class="line">  Future&lt;T&gt; invokeMethod&lt;T&gt;(<span class="built_in">String</span> method, [<span class="keyword">dynamic</span> arguments]) <span class="keyword">async</span> &#123;</span><br><span class="line">    <span class="comment">// flutter端通过methodChannel调用native端的方法</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  VoidCallback addMethodHandler(MethodHandler handler) &#123;</span><br><span class="line">		<span class="comment">// 处理native端到flutter端的方法调用</span></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-集成"><a href="#6-集成" class="headerlink" title="6. 集成"></a>6. 集成</h2><p>Hydrofoil 容器的目标是让业务 App 通过简单的接入流程后，快速获得 Webview 容器和 Flutter 的混合开发支持，同时保持较高可维护性，这在 iOS 和 Android 两端的工程上都面临一定的挑战。</p>
+<h3 id="6-1-iOS-端集成"><a href="#6-1-iOS-端集成" class="headerlink" title="6.1 iOS 端集成"></a>6.1 iOS 端集成</h3><p>为了将 Flutter 相关的能力直接集成在容器内部，需要将 <strong>Flutter SDK</strong> 和 <strong>FlutterBoost</strong> 通过依赖的方式引入到容器中。官方 iOS <a href="https://flutter.dev/docs/development/add-to-app" target="_blank" rel="noopener">混编方案</a> 是使用 CocoaPods 和 Flutter SDK 集成，实现了无缝开发，一旦配置好可以在 Flutter 工程内开发、无缝同步到 Native 侧。但是这个方案存在下面几个问题：</p>
+<ul>
+<li>耦合严重，需要修改原有 Native 工程的配置、添加特定脚本去编译 Flutter</li>
+<li>会修改原有 Pod 的 xcconfig 配置</li>
+<li>所有成员均需要成功配置好 Flutter 环境才能编译成功</li>
+</ul>
+<p>所以我们在官方的混编方案上做了工程上的优化，通过一个自动化脚本，将它们的产物 <strong>*.framework</strong> 引入到 Hydrofoil 中。</p>
+<p>实际上，iOS 原生工程依赖了以下 3 部分 Flutter module 生成的 framework：</p>
+<ul>
+<li>Flutter.framework、flutter_boost.framework 被包含在 Hydrofoil 中，接入后一般不用动，除非是 Flutter 和 FlutterBoost 版本更新了；</li>
+<li>App.framework：我们编写的 dart 代码，每次修改 Flutter module 里的代码都需要更新原生工程里的 App.framework；</li>
+<li>FlutterPluginRegistrant.framework 和 Flutter 第三方插件 framework（排除 flutter_boost.framework）：每次对 Flutter module 里的 pubspce.yaml 文件里的依赖进行更新、增加、删除操作都需要将原生工程里本地库（如 FlutterThirdPartyFrameworks）同步更新后，执行 <code>pod install</code>。</li>
+</ul>
+<p><img src="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%207.png" alt="https://phantom-1256176746.cos.ap-chengdu.myqcloud.com/%E6%88%BF%E5%A4%9A%E5%A4%9A%20Hydrofoil%20%E8%B7%A8%E7%AB%AF%E5%AE%B9%E5%99%A8%208ab9d3b7660642b58faf4bf71e64dabd/Untitled%207.png"></p>
+<p>这样一来，我们在原生工程中通过 CocoaPods 引入 Hydrofoil 这个私有库，使用自动化脚本将 Flutter 的业务代码编译成 App.framework 并拷贝到原生工程的目录中，即可编译运行。</p>
+<h3 id="6-2-Android-端集成"><a href="#6-2-Android-端集成" class="headerlink" title="6.2 Android 端集成"></a>6.2 Android 端集成</h3><p>在 Android 工程中直接引用 Flutter 工程会导致编译速度非常慢，而且必须安装了 Flutter 环境才能正常运行，为了解决这些问题，我们将 Flutter 工程打成 <strong>AAR</strong> 包，然后在 Android 工程中引用。而生成 AAR 包有两种方案：</p>
+<ol>
+<li><strong>生成一个 AAR：</strong><ul>
+<li>FlutterBoost 通信模块作为 Flutter 部件发布到 pub 私库</li>
+<li>Flutter 业务模块直接引入 1 的 pub 私库产物</li>
+<li>开发完毕 Flutter 业务模块打包成 Native 需要的 AAR，Android 需要初始化 FlutterBoost，接收消息驱动路由分发</li>
+</ul>
+</li>
+<li><strong>生成两个 AAR：</strong><ul>
+<li>FlutterBoost 通信模块包装成独立的 AAR</li>
+<li>Flutter 业务代码打包成独立的 AAR</li>
+<li>Native 端要初始化 FlutterBoost 的渠道</li>
+</ul>
+</li>
+</ol>
+<p>经过评估，在方案二中，通信模块可以作为基础部件下沉到项目底层，业务层 AAR 作为业务 module 存在，业务 module 变更不会干涉到通信模块，完全解耦，所以我们采用了<strong>生成两个 AAR</strong> 的方案。</p>
+<p>要实现方案二，首先要抽离通信层，我们通过利用 build.gradle 配置文件对项目代码进行编译打包，避免资源文件冗余。关键流程分三步：</p>
+<ul>
+<li>新建 Flutter 插件工程 flutter_route，在 dart 模块中添加 FlutterBoost 依赖并封装 Flutter 端的通信逻辑, 在 Android 模块中封装 Native 端通信逻辑，通过 build.gradle，将 Android 模块的代码，FlutterBoost 代码以及 Flutter SDK 的代码打包，生成 flutter_route_native.aar</li>
+<li>新建 Flutter 工程（业务模块）， 添加 Flutter 插件 flutter_route 的依赖，实现 Flutter 相关业务代码，通过 build.gradle, 移除 FlutterBoost 代码以及 Flutter SDK 的代码，将 Flutter 业务代码以及其他依赖打包生成 flutter_module.aar</li>
+<li>在 native 工程中，引入 flutter_route_native.aar，添加通信层依赖； 引入 flutter_module.aar，可以将 Flutter 相关业务添加到 Native 工程中； 通过调用 flutter_route_native.aar 中的 API，native 可以实现和 flutter 业务之间的通信</li>
+</ul>
+<p>实际上，上面的工程逻辑，我们全部收敛到了 Hydrofoil 容器内，对环境依赖的安装和使用流程做了闭环，实现了开箱即用。</p>
+<h2 id="7-落地结果"><a href="#7-落地结果" class="headerlink" title="7. 落地结果"></a>7. 落地结果</h2><p>目前房多多平台的房云 App、多多新房 App、多多卖房 App、房多多 App 都已经接入了 Hydrofoil 跨端容器，特别是房云 App 项目大量使用了 Hydrofoil 容器提供的混合开发模式，不同场景应用不同的跨端技术，保障用户体验同时提高了开发效率，为 App 的快速上线提供了有力支持。</p>
+<h2 id="8-总结与展望"><a href="#8-总结与展望" class="headerlink" title="8. 总结与展望"></a>8. 总结与展望</h2><p>混合开发带来的开发效率的提升是毋庸置疑的，而随着业务的发展，工程的复杂度不断上升，维护成本上升等问题也为我们带来一定的挑战。通过构建一个统一的跨端容器，打造大前端底座，充分利用跨端技术赋能业务，为我们解决面临的动态化、多端复用、维护成本等问题。未来，我们还会进一步完善跨端容器的生态建设，优化开发体验，基于大前端融合，探索更多跨端技术的可能性。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hybrid/" rel="tag">#hybrid</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/04/flutter-jsbridge-in-android/" rel="next" title="Flutter webview navigation delegate for subframes">
+                <i class="fa fa-chevron-left"></i> Flutter webview navigation delegate for subframes
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-背景"><span class="nav-number">1.</span> <span class="nav-text">1. 背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Webview-容器"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Webview 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-React-Native"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 React Native</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-Flutter"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 Flutter</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Hydrofoil-容器"><span class="nav-number">2.</span> <span class="nav-text">2. Hydrofoil 容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-什么是-Hydrofoil-容器"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 什么是 Hydrofoil 容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-为什么需要-Hydrofoil-容器"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 为什么需要 Hydrofoil 容器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-架构设计"><span class="nav-number">3.</span> <span class="nav-text">3. 架构设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-整体架构"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 整体架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Hydrofoil-Core"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Hydrofoil Core</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-SDK"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 SDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-扩展性"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 扩展性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-模块设计"><span class="nav-number">4.</span> <span class="nav-text">4. 模块设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-Hydrofoil-Core-模块"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Hydrofoil Core 模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-SDK-模块"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 SDK 模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-通信实现"><span class="nav-number">5.</span> <span class="nav-text">5. 通信实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Web-与-Native-通信"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Web 与 Native 通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-Flutter-和-Native-通信"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 Flutter 和 Native 通信</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-集成"><span class="nav-number">6.</span> <span class="nav-text">6. 集成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-iOS-端集成"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 iOS 端集成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-Android-端集成"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 Android 端集成</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-落地结果"><span class="nav-number">7.</span> <span class="nav-text">7. 落地结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-总结与展望"><span class="nav-number">8.</span> <span class="nav-text">8. 总结与展望</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

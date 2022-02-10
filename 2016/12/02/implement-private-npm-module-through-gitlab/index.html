@@ -1,0 +1,579 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="问题背景npm 是 Node 的模块管理器, 功能非常强大. npm 安装公有模块非常简单, 直接一个命令 npm install 模块名字 可以了, 之所以可以这样安装, 是因为模块直接发布在 npm 的公有仓库里的 ( npm publish ) , npm 直接从仓库通过网络获取到就好. 但是, 有时候我们不希望把代码直接发布到公有仓库中, 对于企业来说, 内部的非开源模块肯定是不需要发布到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过 gitlab 和 npm 实现私有模块的发布和安装">
+<meta property="og:url" content="https://sevody.github.io/2016/12/02/implement-private-npm-module-through-gitlab/index.html">
+<meta property="og:site_name" content="Blick Winkel">
+<meta property="og:description" content="问题背景npm 是 Node 的模块管理器, 功能非常强大. npm 安装公有模块非常简单, 直接一个命令 npm install 模块名字 可以了, 之所以可以这样安装, 是因为模块直接发布在 npm 的公有仓库里的 ( npm publish ) , npm 直接从仓库通过网络获取到就好. 但是, 有时候我们不希望把代码直接发布到公有仓库中, 对于企业来说, 内部的非开源模块肯定是不需要发布到">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-02-10T08:10:27.305Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过 gitlab 和 npm 实现私有模块的发布和安装">
+<meta name="twitter:description" content="问题背景npm 是 Node 的模块管理器, 功能非常强大. npm 安装公有模块非常简单, 直接一个命令 npm install 模块名字 可以了, 之所以可以这样安装, 是因为模块直接发布在 npm 的公有仓库里的 ( npm publish ) , npm 直接从仓库通过网络获取到就好. 但是, 有时候我们不希望把代码直接发布到公有仓库中, 对于企业来说, 内部的非开源模块肯定是不需要发布到">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://sevody.github.io/2016/12/02/implement-private-npm-module-through-gitlab/"/>
+
+  <title> 通过 gitlab 和 npm 实现私有模块的发布和安装 | Blick Winkel </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-159642565-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Blick Winkel</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">あっかりいいん、始まるよ</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                通过 gitlab 和 npm 实现私有模块的发布和安装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-12-02T19:53:48+08:00" content="2016-12-02">
+              2016-12-02
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>npm 是 Node 的模块管理器, 功能非常强大. npm 安装公有模块非常简单, 直接一个命令 <code>npm install 模块名字</code> 可以了, 之所以可以这样安装, 是因为模块直接发布在 npm 的公有仓库里的 ( npm publish ) , npm 直接从仓库通过网络获取到就好. 但是, 有时候我们不希望把代码直接发布到公有仓库中, 对于企业来说, 内部的非开源模块肯定是不需要发布到公有仓库中的. 所以我们就要寻找一种可以让 npm 安装私有模块的办法.</p>
+<a id="more"></a>
+<h2 id="备选方案"><a href="#备选方案" class="headerlink" title="备选方案"></a>备选方案</h2><h3 id="购买npm付费账号"><a href="#购买npm付费账号" class="headerlink" title="购买npm付费账号"></a>购买npm付费账号</h3><p>  这是最简单的办法, 根据 <a href="https://www.npmjs.com/pricing" target="_blank" rel="noopener">npm的价格方案</a> , 只要是付费用户, 都可以下载和发布不限量的私有模块, 不过代码也是需要上传到npm的服务器的.</p>
+<h3 id="自建npm仓库"><a href="#自建npm仓库" class="headerlink" title="自建npm仓库"></a>自建npm仓库</h3><p>  这个方案的意思就是: 连仓库都是私有的, 模块自然是私有的. 不过这种方案也是需要构建成本的, 需要额外的机器. 具体实现方案可以参考阿里的<a href="http://blog.fens.me/nodejs-cnpm-npm/" target="_blank" rel="noopener">cnpm</a>.</p>
+<h3 id="利用npm安装机制和git仓库"><a href="#利用npm安装机制和git仓库" class="headerlink" title="利用npm安装机制和git仓库"></a>利用npm安装机制和git仓库</h3><p>  <code>npm install</code> 支持 <code>npm install &lt;git remote url&gt;</code> , 其中 <em>git remote url</em> 的格式是 <em><protocol>://[<user>[:<password>]@]<hostname>[:<port>][:/]<path></path>[#<commit-ish>]</commit-ish></port></hostname></password></user></protocol></em> . 也就是说我们可以通过 npm 直接安装 githug 或 bitbucket 上的代码. 需要注意的是必须确保安装这个私有模块的机器有访问这个私有模块的 git 仓库的权限, 换句话说: 这台机器的公钥必须添加到 git 仓库/账号中.</p>
+<h2 id="gitlab-私有模块方案"><a href="#gitlab-私有模块方案" class="headerlink" title="gitlab 私有模块方案"></a>gitlab 私有模块方案</h2><p>由于 npm 支持 git 协议 , 在公司已经建有 gitlab 的情况下, 通过 gitlab 实现私有模块方案是最简单的.</p>
+<p>发布私有模块只需直接把代码 push 到 gitlab 仓库, 而安装私有模块也只需要一条命令<code>git+ssh://git@git.gitlabdomain.com:Username/Repository#{branch|tag}</code> . 我们可以通过<code>#</code> 后面的<code>branch</code> 和 <code>tag</code> 来进行版本控制.</p>
+<h2 id="模块实现"><a href="#模块实现" class="headerlink" title="模块实现"></a>模块实现</h2><p>如果我们编写的模块用到了 es6 或者 jsx 的语法，在发布之前需要通过 babel 转换成 es5 语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ babel ./src/main.js -o index.js</span><br></pre></td></tr></table></figure>
+<p>当然，模块 export 的时候，最好遵循 <a href="https://github.com/umdjs/umd" target="_blank" rel="noopener">UMD 规范</a></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">root, factory</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> define === <span class="string">'function'</span> &amp;&amp; define.amd) &#123;</span><br><span class="line">        <span class="comment">// AMD</span></span><br><span class="line">        define([<span class="string">'jquery'</span>], factory);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> exports === <span class="string">'object'</span>) &#123;</span><br><span class="line">        <span class="comment">// Node, CommonJS-like</span></span><br><span class="line">        <span class="built_in">module</span>.exports = factory(<span class="built_in">require</span>(<span class="string">'jquery'</span>));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Browser globals (root is window)</span></span><br><span class="line">        root.returnExports = factory(root.jQuery);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;(<span class="keyword">this</span>, <span class="function"><span class="keyword">function</span> (<span class="params">$</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//    methods</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">myFunc</span>(<span class="params"></span>)</span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//    exposed public method</span></span><br><span class="line">    <span class="keyword">return</span> myFunc;</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>为了不用手动处理这些事情，我们还可以利用 webpack 提供的 library 打包功能</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack.config.js</span></span><br><span class="line">...</span><br><span class="line">output: &#123;</span><br><span class="line">    library: <span class="string">"MyLibrary"</span>,</span><br><span class="line">    libraryTarget: <span class="string">"umd"</span></span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://www.jianshu.com/p/7b8771743ee4" target="_blank" rel="noopener">如何通过NPM安装私有模块</a></p>
+<p><a href="http://blog.fens.me/nodejs-cnpm-npm/" target="_blank" rel="noopener">CNPM搭建私有的NPM服务</a></p>
+<p><a href="http://stackoverflow.com/questions/22988876/install-npm-module-from-gitlab-private-repository" target="_blank" rel="noopener">Install npm module from gitlab private repository</a></p>
+<p><a href="https://webpack.js.org/configuration/output/#output-library" target="_blank" rel="noopener">webpack output-library</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/18/deep-clone-and-shallow-copy/" rel="next" title="浅拷贝和深拷贝">
+                <i class="fa fa-chevron-left"></i> 浅拷贝和深拷贝
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/30/how-to-develop-in-react/" rel="prev" title="react 开发总结">
+                react 开发总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Sevody" />
+          <p class="site-author-name" itemprop="name">Sevody</p>
+          <p class="site-description motion-element" itemprop="description">強くなりたい</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题背景"><span class="nav-number">1.</span> <span class="nav-text">问题背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备选方案"><span class="nav-number">2.</span> <span class="nav-text">备选方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#购买npm付费账号"><span class="nav-number">2.1.</span> <span class="nav-text">购买npm付费账号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自建npm仓库"><span class="nav-number">2.2.</span> <span class="nav-text">自建npm仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用npm安装机制和git仓库"><span class="nav-number">2.3.</span> <span class="nav-text">利用npm安装机制和git仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gitlab-私有模块方案"><span class="nav-number">3.</span> <span class="nav-text">gitlab 私有模块方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块实现"><span class="nav-number">4.</span> <span class="nav-text">模块实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sevody</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
